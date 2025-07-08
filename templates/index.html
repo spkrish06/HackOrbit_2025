@@ -65,5 +65,197 @@
         </a>
       </div>
     </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <h4><i class="fas fa-filter"></i>Strategy Configuration</h4>
+
+        <!-- Toggle Buttons -->
+        <div class="toggle-buttons">
+          <button id="equityBtn" class="btn btn-primary-custom">
+            <i class="fas fa-chart-area me-1"></i>Equity
+          </button>
+          <button id="cryptoBtn" class="btn btn-secondary-custom">
+            <i class="fab fa-bitcoin me-1"></i>Crypto
+          </button>
+        </div>
+
+        <!-- Market Dropdown - COMPACT 2 ROWS -->
+        <div id="marketNavbar">
+          <div class="market-row top-row">
+            <button class="btn market-btn" data-market="US">US</button>
+            <button class="btn market-btn" data-market="UK">UK</button>
+            <button class="btn market-btn" data-market="India">India</button>
+          </div>
+          <div class="market-row bottom-row">
+            <button class="btn market-btn" data-market="Japan">Japan</button>
+            <button class="btn market-btn" data-market="Germany">Germany</button>
+            <button class="btn market-btn" data-market="China">China</button>
+          </div>
+        </div>
+
+        <!-- Strategy Form -->
+        <form id="strategy-form" method="POST" novalidate>
+          <div class="form-group">
+            <label for="strategy" class="form-label">
+              <i class="fas fa-brain"></i>Trading Strategy
+            </label>
+            <select id="strategy" name="strategy" class="form-select" required onchange="updateStrategyDescription()">
+              <option value="">Choose a strategy</option>
+              <option value="vwap">VWAP Confirmation</option>
+              <option value="3_pos">3-Candle Positive Closes</option>
+              <option value="hma_ema">RSI-MA Crossover</option>
+              <option value="macd_ema">MACD Crossover</option>
+              <option value="adx_dmi">ADX DMI Crossover</option>
+              <option value="rsi_macd">RSI MACD Crossover</option>
+              <option value="bb_adx">Bollinger ADX Volume Spike</option>
+              <option value="rsi_bb">RSI Bollinger Band Squeeze</option>
+              <option value="triple_ema">Triple EMA Crossover</option>
+              <option value="elder_triple">Elder Triple Screen System</option>
+            </select>
+          </div>
+
+          <div id="strategy-description" class="description-box"></div>
+
+          <div class="form-group">
+            <label for="stock" class="form-label">
+              <i class="fas fa-chart-line"></i>Asset Symbol
+            </label>
+            <select id="stock" name="stock" class="form-select" required>
+              <option value="" disabled selected>Select an asset</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="invest_cap" class="form-label">
+              <i class="fas fa-dollar-sign"></i>Investment Capital
+            </label>
+            <input type="number" class="form-control" id="invest_cap" name="invest_cap" placeholder="e.g. 10000" required>
+          </div>
+
+          <div class="form-group">
+            <label for="turnover" class="form-label">
+              <i class="fas fa-exchange-alt"></i>Max Trades/Day
+            </label>
+            <input type="number" class="form-control" id="turnover" name="turnover" placeholder="e.g. 10" required>
+          </div>
+
+          <div class="form-group">
+            <label for="min_trade_bal" class="form-label">
+              <i class="fas fa-balance-scale"></i>Threshold Balance
+            </label>
+            <input type="number" class="form-control" id="min_trade_bal" name="min_trade_bal" placeholder="e.g. 500" required>
+            <input type="hidden" id="is_crypto" name="is_crypto" value="false">
+          </div>
+
+          <div id="thresholdWarning" class="alert alert-danger" style="display: none;">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Threshold Balance should be <b>less than</b> Investment Capital.
+          </div>
+
+          <button type="submit" id="submitButton" class="btn btn-primary-custom">
+            <i class="fas fa-play me-1"></i>Run Strategy
+          </button>
+
+          <input type="hidden" id="riskFreeRateSymbol" name="rf_symbol" value="^IRX" />
+        </form>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="showTab('metrics')">
+            <i class="fas fa-chart-bar me-1"></i>Portfolio Metrics
+          </button>
+          <button class="tab-btn" onclick="showTab('chart')">
+            <i class="fas fa-chart-area me-1"></i>Performance Chart
+          </button>
+          <button class="tab-btn" onclick="showTab('chat')">
+            <i class="fas fa-robot me-1"></i>AI Assistant
+          </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Metrics Tab -->
+          <div id="metrics-tab" class="tab-pane active">
+            <div class="metrics-container">
+              <div id="loading-spinner" class="spinner"></div>
+              
+              <div id="metrics-content">
+                {% if metrics %}
+                <div class="metrics">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th><i class="fas fa-tag me-1"></i>Metric</th>
+                        <th><i class="fas fa-calculator me-1"></i>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Invested Capital</td><td>${{ "%.2f" % metrics.invested_capital }}</td></tr>
+                      <tr><td>Portfolio Value </td><td id="usdValue">${{ "%.2f" % metrics.portfolio_value }}</td></tr>
+                      <tr><td>Sharpe Ratio</td><td>{{ "%.2f" % metrics.sharpe_ratio }}</td></tr>
+                      <tr><td>Sortino Ratio</td><td>{{ "%.2f" % metrics.sortino_ratio }}</td></tr>
+                      <tr><td>Calmar Ratio</td><td>{{ "%.2f" % metrics.calmar_ratio }}</td></tr>
+                      <tr><td>Standard Deviation</td><td>{{ "%.2f" % metrics.std }}</td></tr>
+                      <tr><td>Mean Return</td><td>{{ "%.2f" % metrics.mean }}</td></tr>
+                      <tr><td>Median Return</td><td>{{ "%.2f" % metrics.median }}</td></tr>
+                      <tr><td>Win Rate (%)</td><td>{{ "%.2f" % metrics.win_rate }}%</td></tr>
+                      <tr><td>Loss Rate (%)</td><td>{{ "%.2f" % metrics.loss_rate }}%</td></tr>
+                      <tr><td>Max Drawdown</td><td>{{ "%.2f" % metrics.max_drawdown }}</td></tr>
+                      <tr><td>CAGR</td><td>{{ "%.2f" % metrics.cagr }}</td></tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                {% else %}
+                <div class="placeholder-content">
+                  <i class="fas fa-chart-bar"></i>
+                  <p>Configure your strategy and run analysis to see portfolio metrics</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart Tab -->
+          <div id="chart-tab" class="tab-pane">
+            <div class="plot-container">
+              <div class="plot-content">
+                {% if plot_div %}
+                {{ plot_div | safe }}
+                {% else %}
+                <div class="placeholder-content">
+                  <i class="fas fa-chart-area"></i>
+                  <p>Run strategy analysis to see performance charts</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced Chat Tab -->
+          <div id="chat-tab" class="tab-pane">
+            <div class="chat-container">
+              <h3><i class="fas fa-robot me-2"></i>AI Trading Assistant</h3>
+              <div id="chat-messages" tabindex="0" aria-atomic="false">
+                <!-- Enhanced welcome message will be added by JavaScript -->
+              </div>
+              <div class="d-flex">
+                <input type="text" id="chat-input" placeholder="Ask about strategy comparisons, SHAP explanations, or trading insights..." aria-label="Chat input box" autocomplete="off" />
+                <button id="send-btn" aria-label="Send chat message">
+                  <i class="fas fa-paper-plane me-2"></i>Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
