@@ -4,11 +4,617 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobalTradeHub - Professional Authentication</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Gradient Orbs */
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 384px;
+            height: 384px;
+            background: rgba(59, 130, 246, 0.2);
+            top: 25%;
+            left: 25%;
+        }
+
+        .orb-2 {
+            width: 320px;
+            height: 320px;
+            background: rgba(147, 51, 234, 0.2);
+            top: 75%;
+            right: 25%;
+            animation-delay: 2s;
+        }
+
+        .orb-3 {
+            width: 256px;
+            height: 256px;
+            background: rgba(16, 185, 129, 0.2);
+            top: 50%;
+            left: 75%;
+            animation-delay: 4s;
+        }
+
+        /* Floating Icons */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .icon-1 { color: #f59e0b; top: 10%; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .icon-2 { color: #10b981; top: 20%; right: 20%; animation-delay: 2s; animation-duration: 25s; }
+        .icon-3 { color: #ef4444; bottom: 30%; left: 15%; animation-delay: 4s; animation-duration: 18s; }
+        .icon-4 { color: #3b82f6; top: 60%; right: 10%; animation-delay: 6s; animation-duration: 22s; }
+        .icon-5 { color: #eab308; bottom: 20%; right: 30%; animation-delay: 8s; animation-duration: 19s; }
+        .icon-6 { color: #8b5cf6; top: 40%; left: 5%; animation-delay: 10s; animation-duration: 24s; }
+
+        /* Country Markers */
+        .country-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        .country-marker {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            animation: bounce 2s ease-in-out infinite;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .marker-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .marker-usa { top: 10%; left: 10%; color: #3b82f6; animation-delay: 1s; }
+        .marker-usa .marker-dot { background: #3b82f6; }
+        .marker-china { top: 20%; right: 20%; color: #ef4444; animation-delay: 2s; }
+        .marker-china .marker-dot { background: #ef4444; }
+        .marker-uk { bottom: 20%; left: 20%; color: #10b981; animation-delay: 3s; }
+        .marker-uk .marker-dot { background: #10b981; }
+        .marker-india { bottom: 10%; right: 10%; color: #f59e0b; animation-delay: 4s; }
+        .marker-india .marker-dot { background: #f59e0b; }
+        .marker-germany { top: 50%; left: 10%; color: #eab308; animation-delay: 5s; }
+        .marker-germany .marker-dot { background: #eab308; }
+        .marker-japan { top: 33%; right: 10%; color: #ec4899; animation-delay: 6s; }
+        .marker-japan .marker-dot { background: #ec4899; }
+
+        /* Chart Lines */
+        .chart-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        .chart-line {
+            stroke-dasharray: 1000;
+            animation: draw 8s ease-in-out infinite;
+        }
+
+        .line-2 { animation-delay: 2s; }
+
+        /* Main Container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+
+        /* Brand Styling */
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .brand-logo i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-subtitle {
+            color: #d1d5db;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Styling */
+        .form-label {
+            color: #e5e7eb;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .input-group-text {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+        }
+
+        .btn-outline-secondary {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+        }
+
+        .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Primary Button */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            transform: translateY(-1px);
+            color: white;
+        }
+
+        .btn-primary-custom:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Secondary Button */
+        .btn-secondary-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-secondary-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Links */
+        .auth-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .auth-link:hover {
+            color: #93c5fd;
+        }
+
+        /* Form Check */
+        .form-check-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-check-input:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .form-check-label {
+            color: #d1d5db;
+            font-size: 0.875rem;
+        }
+
+        /* Alert Styling */
+        .alert-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            backdrop-filter: blur(8px);
+        }
+
+        .alert-success-custom {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #a7f3d0;
+        }
+
+        .alert-danger-custom {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .alert-warning-custom {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+        }
+
+        /* Market Stats */
+        .market-stats {
+            margin-top: 2rem;
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .market-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .market-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .market-name {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .market-value {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .market-change {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .market-change.positive { color: #10b981; }
+        .market-change.negative { color: #ef4444; }
+
+        /* Verification Code Input */
+        .verification-inputs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .verification-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .verification-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        /* Redirect Overlay */
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .redirect-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .redirect-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .redirect-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #3b82f6;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        .redirect-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+        }
+
+        .redirect-message {
+            color: #d1d5db;
+            font-size: 1rem;
+        }
+
+        /* Hidden class */
+        .d-none { display: none !important; }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes draw {
+            0% { stroke-dasharray: 0 1000; }
+            100% { stroke-dasharray: 1000 0; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 1.5rem;
+                margin: 1rem;
+                max-width: 100%;
+            }
+            
+            .brand-title {
+                font-size: 1.75rem;
+            }
+            
+            .floating-icon {
+                font-size: 1.5rem;
+            }
+            
+            .orb-1, .orb-2, .orb-3 {
+                width: 200px;
+                height: 200px;
+            }
+
+            .verification-input {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .country-marker {
+                font-size: 0.6rem;
+            }
+
+            .marker-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 1rem;
+            }
+            
+            .brand-logo {
+                width: 48px;
+                height: 48px;
+            }
+            
+            .brand-logo i {
+                font-size: 1.5rem;
+            }
+            
+            .brand-title {
+                font-size: 1.5rem;
+            }
+
+            .verification-inputs {
+                gap: 0.25rem;
+            }
+
+            .verification-input {
+                width: 35px;
+                height: 35px;
+                font-size: 0.875rem;
+            }
+
+            .floating-icon {
+                font-size: 1.2rem;
+            }
+
+            .country-marker {
+                font-size: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .auth-container {
+                padding: 0.75rem;
+                border-radius: 16px;
+            }
+
+            .brand-title {
+                font-size: 1.25rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.875rem;
+            }
+
+            .verification-input {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
-
-
 <body>
+    <!-- Redirect Overlay -->
+    <div class="redirect-overlay" id="redirectOverlay">
+        <div class="redirect-content">
+            <div class="redirect-spinner"></div>
+            <h3 class="redirect-title">Welcome Back!</h3>
+            <p class="redirect-message">Redirecting to your dashboard...</p>
+        </div>
+    </div>
 
+    <!-- Animated Background -->
     <div class="animated-background">
         <!-- Gradient Orbs -->
         <div class="gradient-orb orb-1"></div>
@@ -24,7 +630,55 @@
             <i class="fas fa-bolt floating-icon icon-5"></i>
             <i class="fas fa-chart-bar floating-icon icon-6"></i>
         </div>
-
+        
+        <!-- Country Markers -->
+        <div class="country-markers">
+            <div class="country-marker marker-usa">
+                <div class="marker-dot"></div>
+                <span>USA</span>
+            </div>
+            <div class="country-marker marker-china">
+                <div class="marker-dot"></div>
+                <span>CHINA</span>
+            </div>
+            <div class="country-marker marker-uk">
+                <div class="marker-dot"></div>
+                <span>UK</span>
+            </div>
+            <div class="country-marker marker-india">
+                <div class="marker-dot"></div>
+                <span>INDIA</span>
+            </div>
+            <div class="country-marker marker-germany">
+                <div class="marker-dot"></div>
+                <span>GERMANY</span>
+            </div>
+            <div class="country-marker marker-japan">
+                <div class="marker-dot"></div>
+                <span>JAPAN</span>
+            </div>
+        </div>
+        
+        <!-- Animated Chart Lines -->
+        <svg class="chart-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polyline class="chart-line line-1" fill="none" stroke="url(#gradient1)" stroke-width="0.5" 
+                     points="0,50 20,45 40,55 60,40 80,60 100,35"></polyline>
+            <polyline class="chart-line line-2" fill="none" stroke="url(#gradient2)" stroke-width="0.5" 
+                     points="0,60 25,55 50,65 75,50 100,45"></polyline>
+            <defs>
+                <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0" />
+                    <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0" />
+                </linearGradient>
+                <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#10B981;stop-opacity:0" />
+                    <stop offset="50%" style="stop-color:#10B981;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#10B981;stop-opacity:0" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
 
     <!-- Main Container -->
     <div class="main-container">
@@ -84,7 +738,7 @@
                         </div>
                     </button>
                 </form>
-
+                
                 <div class="text-center mt-4">
                     <p class="text-white-50">
                         Don't have an account? 
@@ -92,7 +746,8 @@
                     </p>
                 </div>
             </div>
-                <!-- Register Form -->
+
+            <!-- Register Form -->
             <div id="registerForm" class="auth-form d-none">
                 <form id="registerFormElement">
                     <div class="mb-3">
@@ -291,7 +946,1039 @@
                 </form>
             </div>
 
+            <!-- Market Stats -->
+            <div class="market-stats" id="marketStats">
+                <div class="stats-section">
+                    <h6 class="stats-title">Global Markets</h6>
+                    <div class="row g-2" id="globalMarkets">
+                        <!-- Markets will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="stats-section">
+                    <h6 class="stats-title">Crypto Markets</h6>
+                    <div id="cryptoMarkets">
+                        <!-- Crypto data will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced Application State with Session Management
+        const appState = {
+            currentForm: 'login',
+            userEmail: '',
+            resendTimer: 60,
+            resendInterval: null,
+            verificationCode: '',
+            resetCode: '',
+            users: JSON.parse(localStorage.getItem('globalTradeHubUsers') || '{}'),
+            currentUser: null,
+            sessions: JSON.parse(localStorage.getItem('globalTradeHubSessions') || '{}'),
+            sessionTimeout: null
+        };
+
+        // Session Management
+        const sessionManager = {
+            // Create a new session (30 days by default)
+            createSession(email, rememberMe = true) {
+                const sessionId = this.generateSessionId();
+                // Always set to 30 days for extended session
+                const expiryTime = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+                
+                const session = {
+                    sessionId,
+                    email,
+                    loginTime: new Date().toISOString(),
+                    expiryTime: expiryTime.toISOString(),
+                    rememberMe: true, // Always true for 30-day sessions
+                    lastActivity: new Date().toISOString(),
+                    deviceInfo: this.getDeviceInfo()
+                };
+
+                appState.sessions[sessionId] = session;
+                localStorage.setItem('globalTradeHubSessions', JSON.stringify(appState.sessions));
+                localStorage.setItem('currentSessionId', sessionId);
+                
+                return sessionId;
+            },
+
+            // Validate existing session
+            validateSession() {
+                const sessionId = localStorage.getItem('currentSessionId');
+                if (!sessionId || !appState.sessions[sessionId]) {
+                    return false;
+                }
+
+                const session = appState.sessions[sessionId];
+                const now = new Date();
+                const expiry = new Date(session.expiryTime);
+
+                if (now > expiry) {
+                    this.destroySession(sessionId);
+                    return false;
+                }
+
+                // Update last activity
+                session.lastActivity = now.toISOString();
+                appState.sessions[sessionId] = session;
+                localStorage.setItem('globalTradeHubSessions', JSON.stringify(appState.sessions));
+
+                return session;
+            },
+
+            // Destroy session
+            destroySession(sessionId = null) {
+                const currentSessionId = sessionId || localStorage.getItem('currentSessionId');
+                if (currentSessionId && appState.sessions[currentSessionId]) {
+                    delete appState.sessions[currentSessionId];
+                    localStorage.setItem('globalTradeHubSessions', JSON.stringify(appState.sessions));
+                }
+                localStorage.removeItem('currentSessionId');
+                
+                if (appState.sessionTimeout) {
+                    clearTimeout(appState.sessionTimeout);
+                }
+            },
+
+            // Generate unique session ID
+            generateSessionId() {
+                return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            },
+
+            // Get device information
+            getDeviceInfo() {
+                return {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    timestamp: new Date().toISOString()
+                };
+            },
+
+            // Get current session info
+            getCurrentSession() {
+                const sessionId = localStorage.getItem('currentSessionId');
+                return sessionId ? appState.sessions[sessionId] : null;
+            }
+        };
+
+        // Enhanced Email Service (Simulation)
+        const emailService = {
+            // Simulate sending verification email
+            async sendVerificationEmail(email, code) {
+                console.log(`📧 Verification Email sent to: ${email}`);
+                console.log(`🔐 Verification Code: ${code}`);
+                console.log(`📝 Email Content: Welcome to GlobalTradeHub! Your verification code is ${code}`);
+                
+                // Simulate email delivery delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return { success: true, messageId: 'msg_' + Date.now() };
+            },
+
+            // Simulate sending password reset email
+            async sendPasswordResetEmail(email, code) {
+                console.log(`📧 Password Reset Email sent to: ${email}`);
+                console.log(`🔐 Reset Code: ${code}`);
+                console.log(`📝 Email Content: Password reset requested for your GlobalTradeHub account. Reset code: ${code}`);
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return { success: true, messageId: 'msg_' + Date.now() };
+            },
+
+            // Simulate sending welcome email
+            async sendWelcomeEmail(email, name) {
+                console.log(`📧 Welcome Email sent to: ${email}`);
+                console.log(`👋 Welcome ${name} to GlobalTradeHub!`);
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return { success: true, messageId: 'msg_' + Date.now() };
+            }
+        };
+
+        // Market Data (Enhanced with real-time simulation)
+        const marketData = {
+            global: [
+                { name: 'S&P 500', value: '4,185.47', change: '+0.85%', positive: true },
+                { name: 'NIFTY 50', value: '19,674.25', change: '+1.23%', positive: true },
+                { name: 'FTSE 100', value: '7,456.89', change: '-0.34%', positive: false },
+                { name: 'DAX', value: '15,987.34', change: '+0.67%', positive: true },
+                { name: 'Nikkei', value: '32,467.12', change: '-0.12%', positive: false },
+                { name: 'Shanghai', value: '3,245.67', change: '+0.45%', positive: true }
+            ],
+            crypto: [
+                { name: 'Bitcoin', symbol: 'BTC', value: '$43,567', change: '+2.45%', positive: true },
+                { name: 'Ethereum', symbol: 'ETH', value: '$2,834', change: '+1.89%', positive: true },
+                { name: 'Solana', symbol: 'SOL', value: '$67.43', change: '-0.67%', positive: false }
+            ],
+
+            // Simulate real-time price updates
+            updatePrices() {
+                this.global.forEach(market => {
+                    const change = (Math.random() - 0.5) * 2;
+                    market.positive = change > 0;
+                    market.change = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+                    
+                    // Update value slightly
+                    const currentValue = parseFloat(market.value.replace(/[,$]/g, ''));
+                    const newValue = currentValue * (1 + change / 100);
+                    market.value = newValue.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                });
+                
+                this.crypto.forEach(crypto => {
+                    const change = (Math.random() - 0.5) * 4;
+                    crypto.positive = change > 0;
+                    crypto.change = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+                    
+                    // Update value slightly
+                    const currentValue = parseFloat(crypto.value.replace(/[$,]/g, ''));
+                    const newValue = currentValue * (1 + change / 100);
+                    crypto.value = '$' + newValue.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                });
+            }
+        };
+
+        // DOM Elements
+        const elements = {
+            // Forms
+            loginForm: document.getElementById('loginForm'),
+            registerForm: document.getElementById('registerForm'),
+            verificationForm: document.getElementById('verificationForm'),
+            forgotPasswordForm: document.getElementById('forgotPasswordForm'),
+            resetPasswordForm: document.getElementById('resetPasswordForm'),
+            
+            // Form Elements
+            loginFormElement: document.getElementById('loginFormElement'),
+            registerFormElement: document.getElementById('registerFormElement'),
+            verificationFormElement: document.getElementById('verificationFormElement'),
+            forgotPasswordFormElement: document.getElementById('forgotPasswordFormElement'),
+            resetPasswordFormElement: document.getElementById('resetPasswordFormElement'),
+            
+            // Alert Container
+            alertContainer: document.getElementById('alertContainer'),
+            
+            // Market Stats
+            globalMarkets: document.getElementById('globalMarkets'),
+            cryptoMarkets: document.getElementById('cryptoMarkets'),
+            marketStats: document.getElementById('marketStats'),
+
+            // Redirect Overlay
+            redirectOverlay: document.getElementById('redirectOverlay')
+        };
+
+        // Utility Functions
+        function showAlert(message, type = 'info', duration = 5000) {
+            const alertClass = type === 'success' ? 'alert-success-custom' : 
+                             type === 'error' ? 'alert-danger-custom' : 
+                             type === 'warning' ? 'alert-warning-custom' : 'alert-custom';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show mb-3`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            `;
+            
+            elements.alertContainer.innerHTML = '';
+            elements.alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, duration);
+        }
+
+        function setLoadingState(button, isLoading) {
+            const btnText = button.querySelector('.btn-text');
+            const spinner = button.querySelector('.spinner-border');
+            
+            if (isLoading) {
+                spinner.classList.remove('d-none');
+                button.disabled = true;
+            } else {
+                spinner.classList.add('d-none');
+                button.disabled = false;
+            }
+        }
+
+        function showForm(formName) {
+            // Hide all forms
+            Object.values(elements).forEach(element => {
+                if (element && element.classList && element.classList.contains('auth-form')) {
+                    element.classList.add('d-none');
+                }
+            });
+            
+            // Show requested form
+            const formElement = elements[formName + 'Form'] || elements[formName];
+            if (formElement) {
+                formElement.classList.remove('d-none');
+                appState.currentForm = formName;
+            }
+
+            // Show/hide market stats based on form
+            if (['verification', 'forgotPassword', 'resetPassword'].includes(formName)) {
+                elements.marketStats.classList.add('d-none');
+            } else {
+                elements.marketStats.classList.remove('d-none');
+            }
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+
+        function generateVerificationCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function saveUsers() {
+            localStorage.setItem('globalTradeHubUsers', JSON.stringify(appState.users));
+        }
+
+        // Redirect to index page
+        function redirectToIndex() {
+            elements.redirectOverlay.classList.add('show');
+            setTimeout(() => {
+                window.location.href = 'index'; // LINE 1027 - This is where the redirect to index.html happens
+            }, 1000);
+        }
+
+        // Market Data Functions
+        function createMarketElement(market) {
+            const col = document.createElement('div');
+            col.className = 'col-6';
+            
+            const changeClass = market.positive ? 'positive' : 'negative';
+            const icon = market.positive ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
+            
+            col.innerHTML = `
+                <div class="market-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="market-name">${market.name}</div>
+                            <div class="market-value">${market.value}</div>
+                        </div>
+                        <div class="market-change ${changeClass}">
+                            <i class="fas ${icon}"></i>
+                            <span>${market.change}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function createCryptoElement(crypto) {
+            const cryptoDiv = document.createElement('div');
+            cryptoDiv.className = 'market-item d-flex justify-content-between align-items-center';
+            
+            const changeClass = crypto.positive ? 'positive' : 'negative';
+            const icon = crypto.positive ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
+            
+            cryptoDiv.innerHTML = `
+                <div>
+                    <div class="market-name">${crypto.name}</div>
+                    <div class="market-value">${crypto.symbol}</div>
+                </div>
+                <div class="text-end">
+                    <div class="market-name">${crypto.value}</div>
+                    <div class="market-change ${changeClass}">
+                        <i class="fas ${icon}"></i>
+                        <span>${crypto.change}</span>
+                    </div>
+                </div>
+            `;
+            
+            return cryptoDiv;
+        }
+
+        function initializeMarketData() {
+            // Clear existing data
+            elements.globalMarkets.innerHTML = '';
+            elements.cryptoMarkets.innerHTML = '';
+
+            // Populate Global Markets
+            marketData.global.forEach(market => {
+                const marketElement = createMarketElement(market);
+                elements.globalMarkets.appendChild(marketElement);
+            });
+
+            // Populate Crypto Markets
+            marketData.crypto.forEach(crypto => {
+                const cryptoElement = createCryptoElement(crypto);
+                elements.cryptoMarkets.appendChild(cryptoElement);
+            });
+        }
+
+        // Verification Code Input Handler
+        function setupVerificationInputs() {
+            const inputs = document.querySelectorAll('.verification-input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    // Only allow numbers
+                    if (!/^\d*$/.test(value)) {
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    if (value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const paste = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = paste.replace(/\D/g, '').slice(0, 6);
+                    
+                    for (let i = 0; i < digits.length && i < inputs.length; i++) {
+                        inputs[i].value = digits[i];
+                    }
+                    
+                    if (digits.length > 0) {
+                        const lastIndex = Math.min(digits.length - 1, inputs.length - 1);
+                        inputs[lastIndex].focus();
+                    }
+                });
+            });
+        }
+
+        // Resend Timer
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendCodeBtn');
+            const timerSpan = document.getElementById('resendTimer');
+            
+            appState.resendTimer = 60;
+            resendBtn.disabled = true;
+            
+            appState.resendInterval = setInterval(() => {
+                appState.resendTimer--;
+                timerSpan.textContent = appState.resendTimer;
+                
+                if (appState.resendTimer <= 0) {
+                    clearInterval(appState.resendInterval);
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = 'Resend Code';
+                }
+            }, 1000);
+        }
+
+        // Enhanced Form Handlers
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showAlert('Please enter your password.', 'error');
+                return;
+            }
+            
+            setLoadingState(loginBtn, true);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Check if user exists and password matches
+                const user = appState.users[email];
+                if (!user) {
+                    showAlert('No account found with this email address. Please sign up first.', 'error');
+                    return;
+                }
+                
+                if (user.password !== password) {
+                    showAlert('Invalid password. Please try again.', 'error');
+                    return;
+                }
+                
+                if (!user.verified) {
+                    showAlert('Please verify your email address before signing in.', 'warning');
+                    appState.userEmail = email;
+                    appState.verificationCode = generateVerificationCode();
+                    document.getElementById('verificationEmail').textContent = email;
+                    document.getElementById('displayCode').textContent = appState.verificationCode;
+                    
+                    await emailService.sendVerificationEmail(email, appState.verificationCode);
+                    showForm('verification');
+                    startResendTimer();
+                    return;
+                }
+                
+                // Successful login - Create session (30 days)
+                const sessionId = sessionManager.createSession(email, true);
+                appState.currentUser = user;
+                
+                // Update user's last login
+                user.lastLogin = new Date().toISOString();
+                saveUsers();
+                
+                showAlert('Login successful! Welcome back.', 'success');
+                
+                // Redirect to index page after 1 second
+                setTimeout(() => {
+                    redirectToIndex();
+                }, 1000);
+                
+            } catch (error) {
+                showAlert('Login failed. Please try again.', 'error');
+            } finally {
+                setLoadingState(loginBtn, false);
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const registerBtn = document.getElementById('registerBtn');
+            
+            if (!name) {
+                showAlert('Please enter your full name.', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            if (appState.users[email]) {
+                showAlert('An account with this email already exists. Please sign in instead.', 'error');
+                return;
+            }
+            
+            if (!validatePassword(password)) {
+                showAlert('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match.', 'error');
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showAlert('Please agree to the Terms of Service and Privacy Policy.', 'error');
+                return;
+            }
+            
+            setLoadingState(registerBtn, true);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Create user account
+                appState.users[email] = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    verified: false,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null,
+                    profile: {
+                        avatar: null,
+                        preferences: {
+                            notifications: true,
+                            twoFactor: false
+                        }
+                    }
+                };
+                
+                saveUsers();
+                
+                appState.userEmail = email;
+                appState.verificationCode = generateVerificationCode();
+                
+                document.getElementById('verificationEmail').textContent = email;
+                document.getElementById('displayCode').textContent = appState.verificationCode;
+                
+                await emailService.sendVerificationEmail(email, appState.verificationCode);
+                
+                showAlert('Account created successfully! Please verify your email.', 'success');
+                
+                setTimeout(() => {
+                    showForm('verification');
+                    startResendTimer();
+                }, 1500);
+                
+            } catch (error) {
+                showAlert('Registration failed. Please try again.', 'error');
+            } finally {
+                setLoadingState(registerBtn, false);
+            }
+        }
+
+        async function handleVerification(e) {
+            e.preventDefault();
+            
+            const codes = [];
+            for (let i = 1; i <= 6; i++) {
+                const code = document.getElementById(`code${i}`).value;
+                if (!code) {
+                    showAlert('Please enter the complete verification code.', 'error');
+                    return;
+                }
+                codes.push(code);
+            }
+            
+            const enteredCode = codes.join('');
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            if (enteredCode !== appState.verificationCode) {
+                showAlert('Invalid verification code. Please check and try again.', 'error');
+                return;
+            }
+            
+            setLoadingState(verifyBtn, true);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mark user as verified
+                if (appState.users[appState.userEmail]) {
+                    appState.users[appState.userEmail].verified = true;
+                    appState.users[appState.userEmail].verifiedAt = new Date().toISOString();
+                    saveUsers();
+                    
+                    // Send welcome email
+                    await emailService.sendWelcomeEmail(
+                        appState.userEmail, 
+                        appState.users[appState.userEmail].name
+                    );
+                }
+                
+                showAlert('Email verified successfully! You can now sign in.', 'success');
+                
+                setTimeout(() => {
+                    showForm('login');
+                    // Clear verification inputs
+                    for (let i = 1; i <= 6; i++) {
+                        document.getElementById(`code${i}`).value = '';
+                    }
+                    // Pre-fill login email
+                    document.getElementById('loginEmail').value = appState.userEmail;
+                }, 1500);
+                
+            } catch (error) {
+                showAlert('Verification failed. Please try again.', 'error');
+            } finally {
+                setLoadingState(verifyBtn, false);
+            }
+        }
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+            const sendResetBtn = document.getElementById('sendResetBtn');
+            
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            if (!appState.users[email]) {
+                showAlert('No account found with this email address.', 'error');
+                return;
+            }
+            
+            setLoadingState(sendResetBtn, true);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                appState.userEmail = email;
+                appState.resetCode = generateVerificationCode();
+                
+                document.getElementById('displayResetCode').textContent = appState.resetCode;
+                
+                await emailService.sendPasswordResetEmail(email, appState.resetCode);
+                
+                showAlert('Password reset code sent to your email.', 'success');
+                
+                setTimeout(() => {
+                    showForm('resetPassword');
+                }, 1500);
+                
+            } catch (error) {
+                showAlert('Failed to send reset code. Please try again.', 'error');
+            } finally {
+                setLoadingState(sendResetBtn, false);
+            }
+        }
+
+        async function handleResetPassword(e) {
+            e.preventDefault();
+            
+            const resetCode = document.getElementById('resetCode').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+            
+            if (resetCode !== appState.resetCode) {
+                showAlert('Invalid verification code. Please check and try again.', 'error');
+                return;
+            }
+            
+            if (!validatePassword(newPassword)) {
+                showAlert('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                showAlert('Passwords do not match.', 'error');
+                return;
+            }
+            
+            setLoadingState(resetPasswordBtn, true);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Update user password
+                if (appState.users[appState.userEmail]) {
+                    appState.users[appState.userEmail].password = newPassword;
+                    appState.users[appState.userEmail].passwordResetAt = new Date().toISOString();
+                    saveUsers();
+                    
+                    // Invalidate all existing sessions for this user
+                    Object.keys(appState.sessions).forEach(sessionId => {
+                        if (appState.sessions[sessionId].email === appState.userEmail) {
+                            delete appState.sessions[sessionId];
+                        }
+                    });
+                    localStorage.setItem('globalTradeHubSessions', JSON.stringify(appState.sessions));
+                }
+                
+                showAlert('Password reset successfully! You can now sign in with your new password.', 'success');
+                
+                setTimeout(() => {
+                    showForm('login');
+                    // Clear reset form
+                    document.getElementById('resetCode').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmNewPassword').value = '';
+                    // Pre-fill login email
+                    document.getElementById('loginEmail').value = appState.userEmail;
+                }, 1500);
+                
+            } catch (error) {
+                showAlert('Failed to reset password. Please try again.', 'error');
+            } finally {
+                setLoadingState(resetPasswordBtn, false);
+            }
+        }
+
+        async function handleResendCode() {
+            try {
+                // Generate new code
+                appState.verificationCode = generateVerificationCode();
+                document.getElementById('displayCode').textContent = appState.verificationCode;
+                
+                await emailService.sendVerificationEmail(appState.userEmail, appState.verificationCode);
+                
+                showAlert('New verification code sent to your email.', 'success');
+                startResendTimer();
+                
+            } catch (error) {
+                showAlert('Failed to resend code. Please try again.', 'error');
+            }
+        }
+
+        // Logout function
+        function handleLogout() {
+            sessionManager.destroySession();
+            appState.currentUser = null;
+            
+            // Clear form data
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('rememberMe').checked = true;
+            
+            showAlert('You have been logged out successfully.', 'success');
+            showForm('login');
+        }
+
+        // Event Listeners
+        function initializeEventListeners() {
+            // Form submissions
+            elements.loginFormElement.addEventListener('submit', handleLogin);
+            elements.registerFormElement.addEventListener('submit', handleRegister);
+            elements.verificationFormElement.addEventListener('submit', handleVerification);
+            elements.forgotPasswordFormElement.addEventListener('submit', handleForgotPassword);
+            elements.resetPasswordFormElement.addEventListener('submit', handleResetPassword);
+            
+            // Form navigation
+            document.getElementById('showRegisterForm').addEventListener('click', (e) => {
+                e.preventDefault();
+                showForm('register');
+            });
+            
+            document.getElementById('showLoginForm').addEventListener('click', (e) => {
+                e.preventDefault();
+                showForm('login');
+            });
+            
+            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showForm('forgotPassword');
+            });
+            
+            document.getElementById('backToLoginBtn').addEventListener('click', () => {
+                showForm('login');
+            });
+            
+            // Password toggles
+            document.getElementById('toggleLoginPassword').addEventListener('click', () => {
+                togglePasswordVisibility('loginPassword', 'loginEyeIcon');
+            });
+            
+            document.getElementById('toggleRegisterPassword').addEventListener('click', () => {
+                togglePasswordVisibility('registerPassword', 'registerEyeIcon');
+            });
+            
+            document.getElementById('toggleNewPassword').addEventListener('click', () => {
+                togglePasswordVisibility('newPassword', 'newPasswordEyeIcon');
+            });
+            
+            // Resend code
+            document.getElementById('resendCodeBtn').addEventListener('click', handleResendCode);
+            
+            // Input focus effects
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', (e) => {
+                    e.target.style.transform = 'translateY(-1px)';
+                });
+                
+                input.addEventListener('blur', (e) => {
+                    e.target.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Real-time password validation
+            document.getElementById('registerPassword').addEventListener('input', (e) => {
+                const password = e.target.value;
+                const confirmPassword = document.getElementById('confirmPassword');
+                
+                if (password.length > 0 && password.length < 8) {
+                    e.target.style.borderColor = '#ef4444';
+                } else {
+                    e.target.style.borderColor = '';
+                }
+                
+                // Check confirm password match
+                if (confirmPassword.value && confirmPassword.value !== password) {
+                    confirmPassword.style.borderColor = '#ef4444';
+                } else {
+                    confirmPassword.style.borderColor = '';
+                }
+            });
+
+            document.getElementById('confirmPassword').addEventListener('input', (e) => {
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = e.target.value;
+                
+                if (confirmPassword && confirmPassword !== password) {
+                    e.target.style.borderColor = '#ef4444';
+                } else {
+                    e.target.style.borderColor = '';
+                }
+            });
+        }
+
+        // Initialize Application
+        function initializeApp() {
+            // Check for existing session on app load
+            const existingSession = sessionManager.validateSession();
+            if (existingSession) {
+                const user = appState.users[existingSession.email];
+                if (user && user.verified) {
+                    appState.currentUser = user;
+                    showAlert(`Welcome back, ${user.name}! Redirecting...`, 'success');
+                    setTimeout(() => {
+                        redirectToIndex();
+                    }, 1000);
+                    return;
+                } else {
+                    sessionManager.destroySession();
+                }
+            }
+
+            initializeMarketData();
+            initializeEventListeners();
+            setupVerificationInputs();
+            
+            // Start market animation
+            setInterval(() => {
+                const marketItems = document.querySelectorAll('.market-item');
+                marketItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.style.transform = 'scale(1.02)';
+                        setTimeout(() => {
+                            item.style.transform = 'scale(1)';
+                        }, 200);
+                    }, index * 100);
+                });
+            }, 8000);
+
+            // Update market data periodically
+            setInterval(() => {
+                marketData.updatePrices();
+                initializeMarketData();
+            }, 30000);
+
+            // Session activity tracking
+            document.addEventListener('click', () => {
+                const session = sessionManager.getCurrentSession();
+                if (session) {
+                    session.lastActivity = new Date().toISOString();
+                    appState.sessions[session.sessionId] = session;
+                    localStorage.setItem('globalTradeHubSessions', JSON.stringify(appState.sessions));
+                }
+            });
+        }
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Escape key to go back to login
+            if (e.key === 'Escape' && appState.currentForm !== 'login') {
+                showForm('login');
+            }
+            
+            // Enter key on verification inputs
+            if (e.key === 'Enter' && document.activeElement.classList.contains('verification-input')) {
+                const verifyBtn = document.getElementById('verifyBtn');
+                if (verifyBtn && !verifyBtn.disabled) {
+                    verifyBtn.click();
+                }
+            }
+        });
+
+        // Page visibility change handling
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // Page became visible, validate session
+                const session = sessionManager.validateSession();
+                if (!session && appState.currentUser) {
+                    showAlert('Your session has expired. Please log in again.', 'warning');
+                    handleLogout();
+                }
+            }
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.form) {
+                showForm(e.state.form);
+            }
+        });
+
+        // Add demo users for testing
+        if (Object.keys(appState.users).length === 0) {
+            appState.users = {
+                'demo@globaltradehub.com': {
+                    name: 'Demo User',
+                    email: 'demo@globaltradehub.com',
+                    password: 'demo1234',
+                    verified: true,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null,
+                    profile: {
+                        avatar: null,
+                        preferences: {
+                            notifications: true,
+                            twoFactor: false
+                        }
+                    }
+                },
+                'test@example.com': {
+                    name: 'Test User',
+                    email: 'test@example.com',
+                    password: 'test1234',
+                    verified: true,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null,
+                    profile: {
+                        avatar: null,
+                        preferences: {
+                            notifications: true,
+                            twoFactor: false
+                        }
+                    }
+                }
+            };
+            saveUsers();
+        }
+
+        // Console helper for developers
+        console.log('🚀 GlobalTradeHub Professional Authentication System Loaded');
+        console.log('📧 Demo accounts:');
+        console.log('   - demo@globaltradehub.com / demo1234');
+        console.log('   - test@example.com / test1234');
+        console.log('🔧 User data stored in localStorage under "globalTradeHubUsers"');
+        console.log('🔐 Session data stored in localStorage under "globalTradeHubSessions"');
+        console.log('⚡ Features: Email verification, Password reset, 30-day sessions, Real-time market data');
+        console.log('🔄 Auto-redirect to index.html on successful login');
+    </script>
 </body>
+</html>
