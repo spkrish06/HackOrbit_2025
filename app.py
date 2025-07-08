@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from vwap_strategy import run_strategy_vwap, get_trade_df
 from pos3_strategy import run_strategy_3pos, get_trade_df
 import plotly.io as pio
+import pandas as pd
 
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
+trade_df_copy = pd.DataFrame() 
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
