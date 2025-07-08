@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from vwap_strategy import run_strategy_vwap, get_trade_df
 from pos3_strategy import run_strategy_3pos, get_trade_df
+from macd_ema_strategy import run_strategy_macd_ema, get_trade_df
 import plotly.io as pio
 import pandas as pd
 
@@ -55,7 +56,9 @@ def index():
         
         elif strategy == '3_pos':
             results = run_strategy_3pos(stock, invest_cap, turnover, min_trade_bal, is_crypto,rf_symbol)
-
+        
+        elif strategy == 'macd_ema':
+            results = run_strategy_macd_ema(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
         else:
             flash("More strategies coming soon!!")
             return redirect(url_for('index'))
