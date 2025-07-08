@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GlobalTradeHub - Trading Strategy Dashboard</title>
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="animated-background">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    
+    <div class="floating-icons">
+      <i class="fab fa-bitcoin floating-icon icon-1"></i>
+      <i class="fas fa-chart-line floating-icon icon-2"></i>
+      <i class="fas fa-trending-up floating-icon icon-3"></i>
+      <i class="fas fa-dollar-sign floating-icon icon-4"></i>
+      <i class="fas fa-bolt floating-icon icon-5"></i>
+      <i class="fas fa-chart-bar floating-icon icon-6"></i>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Top Header -->
+    <div class="top-header">
+      <div class="brand-section" onclick="refreshToInitialState()">
+        <div class="brand-logo">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">GlobalTradeHub</h1>
+          <p class="brand-subtitle">Advanced Trading Strategy Dashboard</p>
+        </div>
+      </div>
+
+
+      <div class="action-buttons">
+        <!-- Market News Button -->
+        <button class="market-news-btn" onclick="showMarketNews()">
+          <i class="fas fa-newspaper"></i>
+          Market News
+        </button>
+
+        <!-- Trading Hub Dropdown -->
+        <div class="action-dropdown">
+          <button class="action-dropdown-btn" onclick="toggleActionDropdown()">
+            <i class="fas fa-rocket"></i>
+            Trading Hub
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="action-dropdown-content" id="actionDropdownContent">
+          </div>
+        </div>
+
+        <!-- Logout Button -->
+        <a href="/" class="logout-btn">
+          <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </a>
+      </div>
+    </div>
+</div>
+</body>
