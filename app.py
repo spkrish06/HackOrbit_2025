@@ -21,5 +21,11 @@ def login():
 def index():
     return render_template('index.html')
 
+
+@app.route('/trades')
+def trades():
+    table_html = None
+    return render_template('trades.html', table=table_html)
+
 if __name__ == '__main__':
     app.run(debug=True)
