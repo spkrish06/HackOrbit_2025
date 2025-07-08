@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from vwap_strategy import run_strategy_vwap, get_trade_df
+from pos3_strategy import run_strategy_3pos, get_trade_df
 import plotly.io as pio
 
 
@@ -49,6 +50,10 @@ def index():
 
         if strategy == 'vwap':
             results = run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol)
+        
+        elif strategy == '3_pos':
+            results = run_strategy_3pos(stock, invest_cap, turnover, min_trade_bal, is_crypto,rf_symbol)
+
         else:
             flash("More strategies coming soon!!")
             return redirect(url_for('index'))
@@ -84,7 +89,11 @@ def index():
 
 @app.route('/trades')
 def trades():
-    table_html = None
+    global trade_df_copy
+    if trade_df_copy.empty:
+        return "No trades available. Run the strategy first."
+    
+    table_html = trade_df_copy.to_html (classes='table table-striped', index=False, border=0, table_id="tradeTable")
     return render_template('trades.html', table=table_html)
 
 if __name__ == '__main__':
