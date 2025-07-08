@@ -3,6 +3,8 @@ from vwap_strategy import run_strategy_vwap, get_trade_df
 from pos3_strategy import run_strategy_3pos, get_trade_df
 from macd_ema_strategy import run_strategy_macd_ema, get_trade_df
 from triple_ema_crossover import run_strategy_triple_ema_crossover, get_trade_df
+from adx_dmi_strategy import run_strategy_adx_dmi, get_trade_df
+from bollinger_adx_spike_strategy import run_strategy_bb_adx_spike, get_trade_df
 import plotly.io as pio
 import pandas as pd
 
@@ -63,7 +65,13 @@ def index():
         
         elif strategy == 'triple_ema':
             results = run_strategy_triple_ema_crossover(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-            
+        
+        elif strategy == 'adx_dmi':
+            results = run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol)
+        
+        elif strategy == 'bb_adx':
+            results = run_strategy_bb_adx_spike(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
+
         else:
             flash("More strategies coming soon!!")
             return redirect(url_for('index'))
