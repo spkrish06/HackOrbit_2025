@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTradeHub - Professional Authentication</title>
+</head>
+
+
+<body>
+
+    <div class="animated-background">
+        <!-- Gradient Orbs -->
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        
+        <!-- Floating Market Icons -->
+        <div class="floating-icons">
+            <i class="fab fa-bitcoin floating-icon icon-1"></i>
+            <i class="fas fa-chart-line floating-icon icon-2"></i>
+            <i class="fas fa-trending-up floating-icon icon-3"></i>
+            <i class="fas fa-dollar-sign floating-icon icon-4"></i>
+            <i class="fas fa-bolt floating-icon icon-5"></i>
+            <i class="fas fa-chart-bar floating-icon icon-6"></i>
+        </div>
+
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="auth-container">
+            <!-- Brand -->
+            <div class="text-center">
+                <div class="brand-logo">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1 class="brand-title">GlobalTradeHub</h1>
+                <p class="brand-subtitle">Gateway to global Equity & Crypto Markets</p>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <form id="loginFormElement">
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
+                                <i class="fas fa-eye" id="loginEyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="auth-link" id="forgotPasswordLink">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary-custom" id="loginBtn">
+                        <span class="btn-text">Sign In</span>
+                        <div class="spinner-border spinner-border-sm d-none ms-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="text-white-50">
+                        Don't have an account? 
+                        <a href="#" class="auth-link" id="showRegisterForm">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
