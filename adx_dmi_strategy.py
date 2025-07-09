@@ -263,10 +263,10 @@ def run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto, 
 
         trade_df_copy = trade_df.copy()
 
-        return trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits
+        return trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits, df
  
     def portfolio_curve():      
-        trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits = track_portfolio_values()
+        trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits, df = track_portfolio_values()
 
         portfolio_series = pd.Series(portfolio_daily_value).sort_index()
 
@@ -342,10 +342,10 @@ def run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto, 
             height=600,
             width=900
         )
-        return  fig, trade_summary, all_trade_profits,portfolio_daily_value 
+        return  fig, trade_summary, all_trade_profits,portfolio_daily_value ,df
         
     def performance_metrics():      
-        fig, trade_summary, all_trade_profits,portfolio_daily_value = portfolio_curve()
+        fig, trade_summary, all_trade_profits,portfolio_daily_value, df = portfolio_curve()
         portfolio_daily_value = {k: round(v, 2) for k, v in portfolio_daily_value.items()}
   
         portfolio_df = pd.DataFrame(portfolio_daily_value.items(), columns=['Date', 'Portfolio Value'])
@@ -438,6 +438,7 @@ def run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto, 
 
 
         return {
+                "df": df,
                 "Invested Capital": invest_copy,
                 "Portfolio value": portfolio_df['Portfolio Value'].iloc[-1],
                 "sharpe": sharpe,

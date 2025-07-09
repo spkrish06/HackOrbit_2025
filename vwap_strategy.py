@@ -25,8 +25,8 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
 
         return temp
     
-    
-    # CALCULATION OF TECHNICAL INCIDATORS TO BE IMPLEMENTED IN THE STRATEGY
+        # CALCULATION OF TECHNICAL INCIDATORS TO BE IMPLEMENTED IN THE STRATEGY
+
     def calculate_technical_indicators(): 
         temp = get_data()
 
@@ -45,7 +45,6 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
         df['High_1'] = temp['High'].shift(1)
         df['VWAP_1'] = temp['VWAP'].shift(1)
         return df
-    
 
     # GENERATING BUY AND SELL SIGNALS ALONG WITH ENTRY/EXIT CONDITIONS
     def signals_generation(): 
@@ -73,8 +72,9 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
                     break
         return df
 
+        # CALCULATION OF PROFITS, PORTFOLIO VALUES, BUY AND SELL DATES AND TRADES THAT ARE SKIPPED
 
-    # CALCULATION OF PROFITS, PORTFOLIO VALUES, BUY AND SELL DATES AND TRADES THAT ARE SKIPPED
+
     def track_portfolio_values():        
         nonlocal invest_cap
         df = signals_generation()
@@ -253,12 +253,10 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
 
         trade_df_copy = trade_df.copy()
 
-        return trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits
-    
-
-    # GENERATING PORTFOLIO CURVE USING PLOTLY
+        return trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits, df
+ 
     def portfolio_curve():      
-        trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits = track_portfolio_values()
+        trade_df, skipped_dates, portfolio_daily_value, trade_summary, all_trade_profits, df = track_portfolio_values()
 
         portfolio_series = pd.Series(portfolio_daily_value).sort_index()
 
@@ -334,12 +332,10 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
             height=600,
             width=900
         )
-        return  fig, trade_summary, all_trade_profits,portfolio_daily_value 
-    
-
-    # CALCULATION KEY PERFORMANCE METRICS    
+        return  fig, trade_summary, all_trade_profits,portfolio_daily_value ,df
+        
     def performance_metrics():      
-        fig, trade_summary, all_trade_profits,portfolio_daily_value = portfolio_curve()
+        fig, trade_summary, all_trade_profits,portfolio_daily_value,df = portfolio_curve()
         portfolio_daily_value = {k: round(v, 2) for k, v in portfolio_daily_value.items()}
   
         portfolio_df = pd.DataFrame(portfolio_daily_value.items(), columns=['Date', 'Portfolio Value'])
@@ -373,17 +369,19 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
         def fetch_risk_free_rate(rf_symbol: str) -> float:
             try:
                 rf_ticker = yf.Ticker(rf_symbol)
-                hist = rf_ticker.history(period="5d")  
+                hist = rf_ticker.history(period="5d")  # Last 1 month to get latest
                 if hist.empty:
-                    return 0.03  
+                    return 0.03  # fallback 3%
                 latest_close = hist['Close'].iloc[-1]
 
+                # Many T-bill rates from yfinance are in percentage points (e.g., 2.5 for 2.5%)
+                # So convert to decimal
                 rf_rate = float(latest_close) / 100.0
                 return rf_rate
 
             except Exception as e:
                 print(f"Error fetching RF rate for {rf_symbol}: {e}")
-                return 0.03  
+                return 0.03  # fallback 3%
 
 
         def sharpe_ratio(return_series, N, rf):
@@ -430,6 +428,7 @@ def run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_
 
 
         return {
+                "df": df,
                 "Invested Capital": invest_copy,
                 "Portfolio value": portfolio_df['Portfolio Value'].iloc[-1],
                 "sharpe": sharpe,
