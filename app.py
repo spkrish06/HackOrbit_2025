@@ -8,6 +8,7 @@ from bollinger_adx_spike_strategy import run_strategy_bb_adx_spike, get_trade_df
 from rsi_macd import run_strategy_rsi_macd_crossover, get_trade_df
 from hma_ema_strategy import run_strategy_hma_ema, get_trade_df
 from elder_triple import run_strategy_elder_triple_screen, get_trade_df
+from rsi_bollinger import run_strategy_rsi_bb,get_trade_df
 import plotly.io as pio
 import pandas as pd
 
@@ -83,9 +84,12 @@ def index():
 
         elif strategy == 'elder_triple':
             results = run_strategy_elder_triple_screen(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
+        
+        elif strategy == 'rsi_bb':
+            results = run_strategy_rsi_bb(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
 
         else:
-            flash("Last strategy coming soon!!")
+            flash("Invalid strategy!!")
             return redirect(url_for('index'))
        
         plot_div = pio.to_html(results['plotly_fig'], full_html=False)
