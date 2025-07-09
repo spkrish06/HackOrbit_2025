@@ -1,51 +1,42 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
-from vwap_strategy import run_strategy_vwap, get_trade_df
-from pos3_strategy import run_strategy_3pos, get_trade_df
-from macd_ema_strategy import run_strategy_macd_ema, get_trade_df
-from triple_ema_crossover import run_strategy_triple_ema_crossover, get_trade_df
-from adx_dmi_strategy import run_strategy_adx_dmi, get_trade_df
-from bollinger_adx_spike_strategy import run_strategy_bb_adx_spike, get_trade_df
-from rsi_macd import run_strategy_rsi_macd_crossover, get_trade_df
-from hma_ema_strategy import run_strategy_hma_ema, get_trade_df
-from elder_triple import run_strategy_elder_triple_screen, get_trade_df
-from rsi_bollinger import run_strategy_rsi_bb,get_trade_df
-import plotly.io as pio
 import pandas as pd
-import os
-import joblib as jb
-from sklearn.ensemble import RandomForestClassifier
-import traceback
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+from vwap_strategy  import run_strategy_vwap, get_trade_df
+from pos3_strategy import run_strategy_3pos, get_trade_df
+from hma_ema_strategy   import run_strategy_hma_ema, get_trade_df
+from macd_ema_strategy import run_strategy_macd_ema, get_trade_df
+from adx_dmi_strategy import run_strategy_adx_dmi, get_trade_df
+from elder_triple import run_strategy_elder_triple_screen, get_trade_df
+from triple_ema_crossover import run_strategy_triple_ema_crossover, get_trade_df
+from bollinger_adx_spike_strategy import run_strategy_bb_adx_spike, get_trade_df
+from rsi_bollinger import run_strategy_rsi_bb, get_trade_df
+from rsi_macd import run_strategy_rsi_macd_crossover, get_trade_df
+import os
+import time
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam
 from openai._exceptions import RateLimitError 
-import time
+import joblib as jb
+from sklearn.ensemble import RandomForestClassifier
+import yfinance as yf
+from Utils.pdf_report import generate_pdf_report
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv() 
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY")
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+app.secret_key = os.getenv("FLASK_SECRET_KEY")  
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) 
+
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+import plotly.io as pio
 
 trade_df_copy = pd.DataFrame() 
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if username == 'admin' and password == '1234':
-            return redirect(url_for('index'))  
-        else:
-            return "Invalid credentials. Try again."
-
-    return render_template('login.html') 
-
-
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     metrics = None
@@ -75,37 +66,28 @@ def index():
 
         if strategy == 'vwap':
             results = run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol)
-        
         elif strategy == '3_pos':
             results = run_strategy_3pos(stock, invest_cap, turnover, min_trade_bal, is_crypto,rf_symbol)
-        
-        elif strategy == 'macd_ema':
-            results = run_strategy_macd_ema(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-        
-        elif strategy == 'triple_ema':
-            results = run_strategy_triple_ema_crossover(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-        
-        elif strategy == 'adx_dmi':
-            results = run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol)
-        
-        elif strategy == 'bb_adx':
-            results = run_strategy_bb_adx_spike(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-        
-        elif strategy == 'rsi_macd':
-            results = run_strategy_rsi_macd_crossover(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-        
         elif strategy == 'hma_ema':
             results = run_strategy_hma_ema(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-
-        elif strategy == 'elder_triple':
-            results = run_strategy_elder_triple_screen(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-        
+        elif strategy == 'macd_ema':
+            results = run_strategy_macd_ema(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
+        elif strategy == 'adx_dmi':
+            results = run_strategy_adx_dmi(stock, invest_cap, turnover, min_trade_bal, is_crypto,rf_symbol)
+        elif strategy == 'rsi_macd':
+            results = run_strategy_rsi_macd_crossover(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
         elif strategy == 'rsi_bb':
             results = run_strategy_rsi_bb(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
-
+        elif strategy == 'bb_adx':
+            results = run_strategy_bb_adx_spike(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
+        elif strategy == 'triple_ema':
+            results = run_strategy_triple_ema_crossover(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
+        elif strategy == 'elder_triple':
+            results = run_strategy_elder_triple_screen(stock, invest_cap, turnover, min_trade_bal,is_crypto,rf_symbol)
         else:
-            flash("Invalid strategy!!")
+            flash("Invalid strategy selected.", "danger")
             return redirect(url_for('index'))
+
        
         plot_div = pio.to_html(results['plotly_fig'], full_html=False)
         metrics = {
@@ -120,12 +102,33 @@ def index():
                 'win_rate': results['win_rate'],
                 'loss_rate': results['loss_rate'],
                 'max_drawdown': results['max_drawdown'],
-                'cagr': results['CAGR']
+                'cagr': results['CAGR'],
                 }
-    
+        global trade_df_copy
+        trade_df_copy = pd.DataFrame(results['trades'])
+        pdf_path = generate_pdf_report(
+            metrics = {
+                'invested_capital': results['Invested Capital'],
+                'portfolio_value': results['Portfolio value'],
+                'sharpe_ratio': results['sharpe'],
+                'sortino_ratio': results['sortino'],
+                'calmar_ratio': results['calmar'],
+                'std': results['std'],
+                'mean': results['mean'],
+                'median': results['median'],
+                'win_rate': results['win_rate'],
+                'loss_rate': results['loss_rate'],
+                'max_drawdown': results['max_drawdown'],
+                'cagr': results['CAGR'],
+                },
+            stock_name=stock,
+            strategy_name=strategy.upper(),
+            fig=results['plotly_fig'],
+        )
         session['latest_metrics'] = metrics
         session['portfolio_data'] = results.get('portfolio_data')
         session['latest_csv'] = results['csv_path']
+        session['latest_pdf'] = pdf_path
         selected_strategies = [strategy]
 
     return render_template(
@@ -135,17 +138,6 @@ def index():
         selected_strategies=selected_strategies
     )
 
-
-@app.route('/trades')
-def trades():
-    global trade_df_copy
-    if trade_df_copy.empty:
-        return "No trades available. Run the strategy first."
-    
-    table_html = trade_df_copy.to_html (classes='table table-striped', index=False, border=0, table_id="tradeTable")
-    return render_template('trades.html', table=table_html)
-
-
 @app.route("/recommend_strategy_page", methods=["GET"])
 def recommend_strategy_page():
     return render_template("recommend_strategy.html")
@@ -154,7 +146,6 @@ def recommend_strategy_page():
 @app.route("/recommend_strategy", methods=["POST"])
 def recommend_strategy():
     try:
-        # Input validation
         stock = request.form.get('stock')
         invest_cap = request.form.get('invest_cap')
         turnover = request.form.get('turnover')
@@ -169,7 +160,6 @@ def recommend_strategy():
         turnover = int(turnover)
         min_trade_bal = float(min_trade_bal)
 
-        # Run all strategies and collect their metrics
         ml_strategies = {
             'vwap': run_strategy_vwap(stock, invest_cap, turnover, min_trade_bal,is_crypto, rf_symbol),
             '3_pos': run_strategy_3pos(stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol),
@@ -219,6 +209,15 @@ def recommend_strategy():
         best_strategy = strategy_names[best_idx]
         best_result = ml_strategies[best_strategy]
 
+        session['strategy'] = best_strategy
+        session['stock'] = stock
+        session['invest_cap'] = invest_cap
+        session['turnover'] = turnover
+        session['min_trade_bal'] = min_trade_bal
+        session['is_crypto'] = is_crypto
+        session['rf_symbol'] = rf_symbol
+
+ 
         response = {
             "recommended_strategy": best_strategy,
             "metrics": {
@@ -237,12 +236,100 @@ def recommend_strategy():
                 "csv_path": best_result.get("csv_path", ""),
             }
         }
-
+        
         return jsonify(response)
 
     except Exception as e:
+        import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
+
+
+@app.route("/live_signal", methods=["GET", "POST"])
+def get_live_signal():
+    try:
+        strategy = session.get('strategy')
+        stock = session.get('stock')
+        invest_cap = session.get('invest_cap')
+        turnover = session.get('turnover')
+        min_trade_bal = session.get('min_trade_bal')
+        is_crypto = session.get('is_crypto', False)
+        rf_symbol = session.get('rf_symbol', '^IRX')
+
+        if None in (strategy, stock, invest_cap, turnover, min_trade_bal):
+            return jsonify({"error": "Session data missing. Please run the strategy recommendation again."}), 400
+
+        invest_cap = float(invest_cap)
+        turnover = int(turnover)
+        min_trade_bal = float(min_trade_bal)
+
+        strategy_funcs = {
+            'vwap': run_strategy_vwap,
+            '3_pos': run_strategy_3pos,
+            'hma_ema': run_strategy_hma_ema,
+            'macd_ema': run_strategy_macd_ema,
+            'adx_dmi': run_strategy_adx_dmi,
+            'rsi_macd': run_strategy_rsi_macd_crossover,
+            'rsi_bb': run_strategy_rsi_bb,
+            'bb_adx': run_strategy_bb_adx_spike,
+            'triple_ema': run_strategy_triple_ema_crossover,
+            'elder_triple': run_strategy_elder_triple_screen
+        }
+
+      
+        if strategy not in strategy_funcs:
+            return jsonify({"error": f"Invalid strategy '{strategy}'."}), 400
+
+        result = strategy_funcs[strategy](
+            stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol
+        )
+
+        df_with_signal = result.get('df')
+        if df_with_signal is None or df_with_signal.empty:
+            return jsonify({"error": "No signal data available"}), 500
+
+        latest = df_with_signal.iloc[-1]
+        signal = "BUY" if latest.get('Buy_Signal', False) else "SELL"
+        price = round(latest['Close'], 2)
+        timestamp = latest.name.strftime('%Y-%m-%d %H:%M')
+
+        return jsonify({
+            "signal": signal,
+            "price": price,
+            "time": timestamp
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if username == 'admin' and password == '1234':
+            return redirect(url_for('index')) 
+        else:
+            return "Invalid credentials. Try again."
+
+    return render_template('login.html')  
+
+@app.route('/trades')
+def trades():
+    global trade_df_copy
+    if trade_df_copy.empty:
+        return "No trades available. Run the strategy first."
+    
+    table_html = trade_df_copy.to_html (classes='table table-striped', index=False, border=0, table_id="tradeTable")
+
+    return render_template('trades.html', table=table_html)
+
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
@@ -335,10 +422,10 @@ Based on these metrics:
             )
             return response.choices[0].message.content.strip()
         except RateLimitError:
-            print("Rate limit hit. Retrying...")
+            print(" Rate limit hit. Retrying...")
             time.sleep(delay)
             delay *= 2
-    return "Failed to retrieve response from GPT after multiple attempts."
+    return " Failed to retrieve response from GPT after multiple attempts."
 
 def generate_metrics_summary(selected_strategies, stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol):
     summary = {}
@@ -407,8 +494,14 @@ def chat():
 
     response = chat_with_gpt(user_query, selected_strategies, metrics_summary)
     return jsonify({'reply': response})
-   
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    except KeyboardInterrupt:
+        print("Server stopped by user (Ctrl + C)")
+        exit
+       
+    
