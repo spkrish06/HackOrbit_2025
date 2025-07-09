@@ -338,7 +338,7 @@ Based on these metrics:
             print("⚠️ Rate limit hit. Retrying...")
             time.sleep(delay)
             delay *= 2
-    return "❌ Failed to retrieve response from GPT after multiple attempts."
+    return "Failed to retrieve response from GPT after multiple attempts."
 
 def generate_metrics_summary(selected_strategies, stock, invest_cap, turnover, min_trade_bal, is_crypto, rf_symbol):
     summary = {}
