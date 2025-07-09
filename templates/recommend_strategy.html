@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GlobalTradeHub - Strategy Recommendation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    .animated-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Gradient Orbs */
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 200px;
+      height: 200px;
+      background: rgba(59, 130, 246, 0.15);
+      top: 20%;
+      left: 20%;
+    }
+
+    .orb-2 {
+      width: 160px;
+      height: 160px;
+      background: rgba(147, 51, 234, 0.15);
+      top: 60%;
+      right: 20%;
+      animation-delay: 2s;
+    }
+
+    .orb-3 {
+      width: 120px;
+      height: 120px;
+      background: rgba(16, 185, 129, 0.15);
+      top: 40%;
+      left: 70%;
+      animation-delay: 4s;
+    }
+
+    /* Floating Icons */
+    .floating-icons {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .floating-icon {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.1;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .icon-1 { color: #f59e0b; top: 10%; left: 10%; animation-delay: 0s; }
+    .icon-2 { color: #10b981; top: 20%; right: 20%; animation-delay: 2s; }
+    .icon-3 { color: #ef4444; bottom: 30%; left: 15%; animation-delay: 4s; }
+    .icon-4 { color: #3b82f6; top: 60%; right: 10%; animation-delay: 6s; }
+    .icon-5 { color: #eab308; bottom: 20%; right: 30%; animation-delay: 8s; }
+    .icon-6 { color: #8b5cf6; top: 40%; left: 5%; animation-delay: 10s; }
+
+    /* Main Container */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 12px;
+      margin-right: 15px;
+    }
+
+    .brand-logo i {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .brand-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+    }
+
+    .brand-subtitle {
+      font-size: 0.9rem;
+      color: #d1d5db;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Content Container */
+    .content-container {
+      flex: 1;
+      display: flex;
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Form Section */
+    .form-section {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px;
+      height: fit-content;
+    }
+
+    .form-title {
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Form Styling */
+    .form-label {
+      color: #e5e7eb;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: white;
+      padding: 12px 15px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+      color: white;
+      outline: none;
+    }
+
+    .form-control::placeholder {
+      color: #9ca3af;
+    }
+
+    .form-select option {
+      background: #1f2937;
+      color: white;
+    }
+
+    /* Market Selection */
+    .market-selection {
+      margin-bottom: 20px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-color: #3b82f6;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .market-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .market-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .market-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .market-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-color: #3b82f6;
+    }
+
+    .market-buttons.hidden {
+      display: none;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-text {
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .submit-btn.loading .btn-text {
+      opacity: 0;
+    }
+
+    .submit-btn.loading .btn-spinner {
+      opacity: 1;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 2px solid white;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Results Section */
+    .results-section {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .results-title {
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Placeholder */
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .placeholder i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .placeholder h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #d1d5db;
+    }
+
+    .placeholder p {
+      font-size: 0.9rem;
+      max-width: 400px;
+    }
+
+    /* Results Content */
+    .results-content {
+      display: none;
+    }
+
+    .results-content.show {
+      display: block;
+    }
+
+    .strategy-header {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .strategy-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .strategy-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .metric-icon {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #60a5fa;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Reason Section */
+    .reason-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 25px;
+    }
+
+    .reason-title {
+      color: #f59e0b;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .reason-content {
+      color: #d1d5db;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .reason-points {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0 0 0;
+    }
+
+    .reason-points li {
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .reason-points li i {
+      color: #10b981;
+      margin-top: 2px;
+    }
+
+    /* Error Message */
+    .error-message {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      color: #fca5a5;
+      text-align: center;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .error-message i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-10px) rotate(120deg); }
+      66% { transform: translateY(5px) rotate(240deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(1.05); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .content-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .form-section {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 15px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      
+      .metric-card {
+        padding: 15px;
+      }
+      
+      .strategy-name {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-section,
+      .results-section {
+        padding: 20px;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="animated-background">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    
+    <div class="floating-icons">
+      <i class="fab fa-bitcoin floating-icon icon-1"></i>
+      <i class="fas fa-chart-line floating-icon icon-2"></i>
+      <i class="fas fa-trending-up floating-icon icon-3"></i>
+      <i class="fas fa-dollar-sign floating-icon icon-4"></i>
+      <i class="fas fa-bolt floating-icon icon-5"></i>
+      <i class="fas fa-chart-bar floating-icon icon-6"></i>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">Strategy Recommendation</h1>
+          <p class="brand-subtitle">AI-Powered Trading Strategy Selection</p>
+        </div>
+      </div>
+      
+      <a href="index" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+      </a>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+      <!-- Form Section -->
+      <div class="form-section">
+        <h2 class="form-title">
+          <i class="fas fa-cog"></i>
+          Configuration
+        </h2>
+
+        <form id="recommendForm">
+          <!-- Market Selection -->
+          <div class="market-selection">
+            <label class="form-label">
+              <i class="fas fa-globe"></i>
+              Market Type
+            </label>
+            <div class="toggle-buttons">
+              <button type="button" id="equityBtn" class="toggle-btn active">
+                <i class="fas fa-chart-area me-1"></i>Equity
+              </button>
+              <button type="button" id="cryptoBtn" class="toggle-btn">
+                <i class="fab fa-bitcoin me-1"></i>Crypto
+              </button>
+            </div>
+
+            <div id="marketButtons" class="market-buttons">
+              <button type="button" class="market-btn active" data-market="US">US</button>
+              <button type="button" class="market-btn" data-market="UK">UK</button>
+              <button type="button" class="market-btn" data-market="India">India</button>
+              <button type="button" class="market-btn" data-market="Japan">Japan</button>
+              <button type="button" class="market-btn" data-market="Germany">Germany</button>
+              <button type="button" class="market-btn" data-market="China">China</button>
+            </div>
+          </div>
+
+          <!-- Stock Selection -->
+          <div class="mb-3">
+            <label for="stock" class="form-label">
+              <i class="fas fa-chart-line"></i>
+              Asset Symbol
+            </label>
+            <select id="stock" name="stock" class="form-select" required>
+              <option value="" disabled selected>Select an asset</option>
+            </select>
+          </div>
+
+          <!-- Investment Capital -->
+          <div class="mb-3">
+            <label for="invest_cap" class="form-label">
+              <i class="fas fa-dollar-sign"></i>
+              Investment Capital
+            </label>
+            <input type="number" class="form-control" id="invest_cap" name="invest_cap" 
+                   placeholder="e.g. 10000" required min="1000" step="100">
+          </div>
+
+          <!-- Max Trades -->
+          <div class="mb-3">
+            <label for="turnover" class="form-label">
+              <i class="fas fa-exchange-alt"></i>
+              Max Trades per Day
+            </label>
+            <input type="number" class="form-control" id="turnover" name="turnover" 
+                   placeholder="e.g. 10" required min="1" max="50">
+          </div>
+
+          <!-- Threshold Balance -->
+          <div class="mb-3">
+            <label for="min_trade_bal" class="form-label">
+              <i class="fas fa-balance-scale"></i>
+              Threshold Balance
+            </label>
+            <input type="number" class="form-control" id="min_trade_bal" name="min_trade_bal" 
+                   placeholder="e.g. 500" required min="100" step="50">
+          </div>
+
+          <div id="thresholdWarning" class="alert alert-danger" style="display: none;">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Threshold Balance should be <b>less than</b> Investment Capital.
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span class="btn-text">
+              <i class="fas fa-magic me-2"></i>Get Best Strategy
+            </span>
+            <div class="btn-spinner">
+              <div class="spinner"></div>
+            </div>
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section">
+        <h2 class="results-title">
+          <i class="fas fa-trophy"></i>
+          Recommendation Results
+        </h2>
+
+        <!-- Placeholder -->
+        <div id="placeholder" class="placeholder">
+          <i class="fas fa-chart-line"></i>
+          <h3>Ready for Analysis</h3>
+          <p>Configure your trading parameters and click "Get Best Strategy" to receive AI-powered recommendations tailored to your investment goals.</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Analysis Failed</h4>
+          <p id="errorText">An error occurred while analyzing strategies. Please try again.</p>
+        </div>
+
+        <!-- Results Content -->
+        <div id="resultsContent" class="results-content">
+          <!-- Strategy Header -->
+          <div class="strategy-header fade-in-up">
+            <div class="strategy-name" id="strategyName">Loading...</div>
+            <div class="strategy-subtitle">Recommended Trading Strategy</div>
+          </div>
+
+          <!-- Metrics Grid -->
+          <div class="metrics-grid fade-in-up">
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-wallet"></i>
+              </div>
+              <div class="metric-value" id="investedCapital">$0</div>
+              <div class="metric-label">Invested Capital</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-chart-area"></i>
+              </div>
+              <div class="metric-value" id="portfolioValue">$0</div>
+              <div class="metric-label">Portfolio Value</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+              <div class="metric-value" id="sharpeRatio">0.00</div>
+              <div class="metric-label">Sharpe Ratio</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+              <div class="metric-value" id="sortinoRatio">0.00</div>
+              <div class="metric-label">Sortino Ratio</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+              <div class="metric-value" id="calmarRatio">0.00</div>
+              <div class="metric-label">Calmar Ratio</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-percentage"></i>
+              </div>
+              <div class="metric-value" id="cagr">0.00%</div>
+              <div class="metric-label">CAGR</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-bullseye"></i>
+              </div>
+              <div class="metric-value" id="winRate">0.00%</div>
+              <div class="metric-label">Win Rate</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="metric-value" id="maxDrawdown">0.00%</div>
+              <div class="metric-label">Max Drawdown</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <div class="metric-value" id="meanReturn">0.00</div>
+              <div class="metric-label">Mean Return</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="metric-value" id="medianReturn">0.00</div>
+              <div class="metric-label">Median Return</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-wave-square"></i>
+              </div>
+              <div class="metric-value" id="stdDev">0.00</div>
+              <div class="metric-label">Std Deviation</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <div class="metric-value" id="lossRate">0.00%</div>
+              <div class="metric-label">Loss Rate</div>
+            </div>
+          </div>
+
+          <!-- Reason Section -->
+          <div class="reason-section fade-in-up">
+            <h3 class="reason-title">
+              <i class="fas fa-lightbulb"></i>
+              Why This Strategy?
+            </h3>
+            <div class="reason-content">
+              <p id="reasonText">Our AI analysis has determined this strategy based on comprehensive performance metrics...</p>
+              <ul class="reason-points" id="reasonPoints">
+                <!-- Reason points will be populated by JavaScript -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Asset data (same as index.html)
+    const cryptoAssets = [
+      { symbol: "BTC-USD", name: "Bitcoin" },
+      { symbol: "ETH-USD", name: "Ethereum" },
+      { symbol: "BNB-USD", name: "Binance Coin" },
+      { symbol: "XRP-USD", name: "Ripple" },
+      { symbol: "ADA-USD", name: "Cardano" },
+      { symbol: "SOL-USD", name: "Solana" },
+      { symbol: "DOGE-USD", name: "Dogecoin" },
+      { symbol: "DOT-USD", name: "Polkadot" },
+      { symbol: "LTC-USD", name: "Litecoin" },
+      { symbol: "AVAX-USD", name: "Avalanche" },
+      { symbol: "SHIB-USD", name: "Shiba Inu" },
+      { symbol: "MATIC-USD", name: "Polygon" },
+      { symbol: "LINK-USD", name: "Chainlink" },
+      { symbol: "ATOM-USD", name: "Cosmos" },
+      { symbol: "TRX-USD", name: "TRON" }
+    ];
+
+    const marketStocks = {
+      US: [
+        { symbol: "AAPL", name: "Apple Inc." },
+        { symbol: "MSFT", name: "Microsoft Corporation" },
+        { symbol: "JPM", name: "JPMorgan Chase & Co." },
+        { symbol: "V", name: "Visa Inc." },
+        { symbol: "WMT", name: "Walmart Inc." },
+        { symbol: "DIS", name: "The Walt Disney Company" },
+        { symbol: "MCD", name: "McDonald's Corporation" },
+        { symbol: "NKE", name: "Nike, Inc." },
+        { symbol: "KO", name: "The Coca-Cola Company" },
+        { symbol: "PG", name: "The Procter & Gamble Company" },
+        { symbol: "GS", name: "The Goldman Sachs Group, Inc." },
+        { symbol: "INTC", name: "Intel Corporation" },
+        { symbol: "CVX", name: "Chevron Corporation" },
+        { symbol: "TRV", name: "The Travelers Companies, Inc." },
+        { symbol: "HD", name: "The Home Depot, Inc." },
+        { symbol: "IBM", name: "International Business Machines Corporation" },
+        { symbol: "BA", name: "The Boeing Company" },
+        { symbol: "CAT", name: "Caterpillar Inc." },
+        { symbol: "MMM", name: "3M Company" },
+        { symbol: "MRK", name: "Merck & Co., Inc." },
+        { symbol: "AXP", name: "American Express Company" },
+        { symbol: "CSCO", name: "Cisco Systems, Inc." },
+        { symbol: "JNJ", name: "Johnson & Johnson" },
+        { symbol: "VZ", name: "Verizon Communications Inc." },
+        { symbol: "UNH", name: "UnitedHealth Group Incorporated" },
+        { symbol: "DOW", name: "Dow Inc." },
+        { symbol: "XOM", name: "Exxon Mobil Corporation" },
+        { symbol: "WBA", name: "Walgreens Boots Alliance, Inc." },
+        { symbol: "CSX", name: "CSX Corporation" }
+      ],
+      UK: [
+        { symbol: "HSBA.L", name: "HSBC Holdings" },
+        { symbol: "BP.L", name: "BP plc" },
+        { symbol: "RDSA.L", name: "Shell plc" },
+        { symbol: "GSK.L", name: "GlaxoSmithKline" },
+        { symbol: "AZN.L", name: "AstraZeneca" },
+        { symbol: "VOD.L", name: "Vodafone Group" },
+        { symbol: "BATS.L", name: "British American Tobacco" },
+        { symbol: "RIO.L", name: "Rio Tinto Group" },
+        { symbol: "LLOY.L", name: "Lloyds Banking Group" },
+        { symbol: "SHEL.L", name: "Shell plc (Class A)" },
+        { symbol: "BARC.L", name: "Barclays" },
+        { symbol: "BT.A.L", name: "BT Group" },
+        { symbol: "ULVR.L", name: "Unilever" },
+        { symbol: "PRU.L", name: "Prudential plc" },
+        { symbol: "DGE.L", name: "Diageo" },
+        { symbol: "BA.L", name: "Bae Systems" },
+        { symbol: "GLEN.L", name: "Glencore" },
+        { symbol: "TSCO.L", name: "Tesco" },
+        { symbol: "SMIN.L", name: "Smith & Nephew" },
+        { symbol: "CNA.L", name: "Centrica" }
+      ],
+      India: [
+        { symbol: "ADANIENT.NS", name: "Adani Enterprises" },
+        { symbol: "ADANIPORTS.NS", name: "Adani Ports & SEZ" },
+        { symbol: "APOLLOHOSP.NS", name: "Apollo Hospitals" },
+        { symbol: "ASIANPAINT.NS", name: "Asian Paints" },
+        { symbol: "AXISBANK.NS", name: "Axis Bank" },
+        { symbol: "BAJAJ-AUTO.NS", name: "Bajaj Auto" },
+        { symbol: "BAJFINANCE.NS", name: "Bajaj Finance" },
+        { symbol: "BAJAJFINSV.NS", name: "Bajaj Finserv" },
+        { symbol: "BEL.NS", name: "Bharat Electronics" },
+        { symbol: "BHARTIARTL.NS", name: "Bharti Airtel" },
+        { symbol: "BPCL.NS", name: "Bharat Petroleum" },
+        { symbol: "BRITANNIA.NS", name: "Britannia Industries" },
+        { symbol: "CIPLA.NS", name: "Cipla" },
+        { symbol: "COALINDIA.NS", name: "Coal India" },
+        { symbol: "DIVISLAB.NS", name: "Divi's Laboratories" },
+        { symbol: "DRREDDY.NS", name: "Dr. Reddy's Laboratories" },
+        { symbol: "EICHERMOT.NS", name: "Eicher Motors" },
+        { symbol: "GRASIM.NS", name: "Grasim Industries" },
+        { symbol: "HCLTECH.NS", name: "HCL Technologies" },
+        { symbol: "HDFCBANK.NS", name: "HDFC Bank" },
+        { symbol: "HDFCLIFE.NS", name: "HDFC Life Insurance" },
+        { symbol: "HEROMOTOCO.NS", name: "Hero MotoCorp" },
+        { symbol: "HINDALCO.NS", name: "Hindalco Industries" },
+        { symbol: "HINDUNILVR.NS", name: "Hindustan Unilever" },
+        { symbol: "ICICIBANK.NS", name: "ICICI Bank" },
+        { symbol: "INDUSINDBK.NS", name: "IndusInd Bank" },
+        { symbol: "INFY.NS", name: "Infosys" },
+        { symbol: "ITC.NS", name: "ITC" },
+        { symbol: "JSWSTEEL.NS", name: "JSW Steel" },
+        { symbol: "KOTAKBANK.NS", name: "Kotak Mahindra Bank" }
+      ],
+      Japan: [
+        { symbol: "7203.T", name: "Toyota Motor" },
+        { symbol: "6758.T", name: "Sony Group" },
+        { symbol: "9984.T", name: "SoftBank Group" },
+        { symbol: "6861.T", name: "Keyence" },
+        { symbol: "8306.T", name: "Mitsubishi UFJ Financial Group" },
+        { symbol: "4502.T", name: "Takeda Pharmaceutical" },
+        { symbol: "8035.T", name: "Tokyo Electron" },
+        { symbol: "6869.T", name: "Sony Financial Holdings" },
+        { symbol: "7751.T", name: "Canon" },
+        { symbol: "9432.T", name: "Nippon Telegraph & Telephone" }
+      ],
+      Germany: [
+        { symbol: "ADS.DE", name: "Adidas" },
+        { symbol: "ALV.DE", name: "Allianz" },
+        { symbol: "BAS.DE", name: "BASF" },
+        { symbol: "BAYN.DE", name: "Bayer" },
+        { symbol: "BEI.DE", name: "Beiersdorf" },
+        { symbol: "BMW.DE", name: "BMW" },
+        { symbol: "CBK.DE", name: "Commerzbank" },
+        { symbol: "DAI.DE", name: "Daimler" },
+        { symbol: "DPW.DE", name: "Deutsche Post" },
+        { symbol: "DTE.DE", name: "Deutsche Telekom" }
+      ],
+      China: [
+        { symbol: "0700.HK", name: "Tencent Holdings" },
+        { symbol: "0939.HK", name: "China Mobile" },
+        { symbol: "1299.HK", name: "AIA Group" },
+        { symbol: "2318.HK", name: "Ping An Insurance" },
+        { symbol: "0388.HK", name: "HK Exchanges" },
+        { symbol: "0005.HK", name: "HSBC Holdings" },
+        { symbol: "3988.HK", name: "Bank of China" },
+        { symbol: "0941.HK", name: "China Mobile" },
+        { symbol: "3690.HK", name: "Meituan" },
+        { symbol: "9618.HK", name: "JD.com" }
+      ]
+    };
+
+    // Strategy names mapping
+    const strategyNames = {
+      'vwap': 'VWAP Confirmation',
+      '3_pos': '3-Candle Positive Closes',
+      'hma_ema': 'RSI-MA Crossover',
+      'macd_ema': 'MACD Crossover',
+      'adx_dmi': 'ADX DMI Crossover',
+      'bb_adx': 'Bollinger + ADX + Volume Spike',
+      'elder_triple': 'Elder Triple Screen System',
+      'rsi_bb': 'RSI + Bollinger Band Squeeze',
+      'rsi_macd': 'RSI + MACD Crossover',
+      'triple_ema': 'Triple EMA Crossover'
+    };
+
+    // Function to generate dynamic reasons based on performance metrics
+    function generateDynamicReasons(metrics, strategyKey) {
+      const reasons = [];
+      
+      // Parse metrics
+      const winRate = parseFloat(metrics.win_rate);
+      const lossRate = parseFloat(metrics.loss_rate);
+      const sharpeRatio = parseFloat(metrics.sharpe_ratio);
+      const sortinoRatio = parseFloat(metrics.sortino_ratio);
+      const calmarRatio = parseFloat(metrics.calmar_ratio);
+      const cagr = parseFloat(metrics.cagr);
+      const maxDrawdown = Math.abs(parseFloat(metrics.max_drawdown));
+      const portfolioValue = parseFloat(metrics.portfolio_value);
+      const investedCapital = parseFloat(metrics.invested_capital);
+      const meanReturn = parseFloat(metrics.mean);
+      const stdDev = parseFloat(metrics.std);
+      
+      // Calculate profitability
+      const totalReturn = ((portfolioValue - investedCapital) / investedCapital) * 100;
+      
+      // Win Rate Analysis
+      if (winRate >= 70) {
+        reasons.push(`Exceptional win rate of ${winRate.toFixed(1)}% demonstrates highly accurate trade selection`);
+      } else if (winRate >= 60) {
+        reasons.push(`Strong win rate of ${winRate.toFixed(1)}% indicates reliable profit opportunities`);
+      } else if (winRate >= 50) {
+        reasons.push(`Balanced ${winRate.toFixed(1)}% win rate with effective risk management`);
+      }
+      
+      // Sharpe Ratio Analysis
+      if (sharpeRatio >= 2.0) {
+        reasons.push(`Outstanding Sharpe ratio of ${sharpeRatio.toFixed(2)} shows excellent risk-adjusted returns`);
+      } else if (sharpeRatio >= 1.5) {
+        reasons.push(`Strong Sharpe ratio of ${sharpeRatio.toFixed(2)} indicates superior risk-adjusted performance`);
+      } else if (sharpeRatio >= 1.0) {
+        reasons.push(`Good Sharpe ratio of ${sharpeRatio.toFixed(2)} demonstrates adequate compensation for risk taken`);
+      } else if (sharpeRatio >= 0.5) {
+        reasons.push(`Acceptable risk-adjusted returns with Sharpe ratio of ${sharpeRatio.toFixed(2)}`);
+      }
+      
+      // CAGR Analysis
+      if (cagr >= 20) {
+        reasons.push(`Impressive ${cagr.toFixed(1)}% annual growth rate significantly outperforms market averages`);
+      } else if (cagr >= 15) {
+        reasons.push(`Strong ${cagr.toFixed(1)}% compound annual growth rate delivers substantial long-term wealth creation`);
+      } else if (cagr >= 10) {
+        reasons.push(`Solid ${cagr.toFixed(1)}% annual return provides steady portfolio growth`);
+      } else if (cagr > 0) {
+        reasons.push(`Positive ${cagr.toFixed(1)}% annual return preserves and grows capital`);
+      }
+      
+      // Drawdown Analysis
+      if (maxDrawdown <= 5) {
+        reasons.push(`Excellent capital preservation with maximum drawdown of only ${maxDrawdown.toFixed(1)}%`);
+      } else if (maxDrawdown <= 10) {
+        reasons.push(`Strong risk control with manageable ${maxDrawdown.toFixed(1)}% maximum drawdown`);
+      } else if (maxDrawdown <= 15) {
+        reasons.push(`Reasonable risk exposure with ${maxDrawdown.toFixed(1)}% maximum drawdown`);
+      } else if (maxDrawdown <= 25) {
+        reasons.push(`Moderate volatility with ${maxDrawdown.toFixed(1)}% maximum drawdown typical for growth strategies`);
+      }
+      
+      // Sortino Ratio Analysis
+      if (sortinoRatio >= 1.5) {
+        reasons.push(`Excellent Sortino ratio of ${sortinoRatio.toFixed(2)} shows superior downside risk management`);
+      } else if (sortinoRatio >= 1.0) {
+        reasons.push(`Good downside protection with Sortino ratio of ${sortinoRatio.toFixed(2)}`);
+      }
+      
+      // Calmar Ratio Analysis
+      if (calmarRatio >= 1.0) {
+        reasons.push(`Strong Calmar ratio of ${calmarRatio.toFixed(2)} indicates excellent return per unit of downside risk`);
+      } else if (calmarRatio >= 0.5) {
+        reasons.push(`Acceptable risk-return profile with Calmar ratio of ${calmarRatio.toFixed(2)}`);
+      }
+      
+      // Profitability Analysis
+      if (totalReturn >= 50) {
+        reasons.push(`Exceptional ${totalReturn.toFixed(1)}% total return demonstrates outstanding strategy performance`);
+      } else if (totalReturn >= 25) {
+        reasons.push(`Strong ${totalReturn.toFixed(1)}% total return significantly outperforms benchmarks`);
+      } else if (totalReturn >= 10) {
+        reasons.push(`Solid ${totalReturn.toFixed(1)}% total return provides meaningful portfolio growth`);
+      } else if (totalReturn > 0) {
+        reasons.push(`Positive ${totalReturn.toFixed(1)}% return successfully preserves and grows capital`);
+      }
+      
+      // Loss Rate Analysis
+      if (lossRate <= 30) {
+        reasons.push(`Low ${lossRate.toFixed(1)}% loss rate demonstrates effective trade selection and timing`);
+      } else if (lossRate <= 40) {
+        reasons.push(`Manageable ${lossRate.toFixed(1)}% loss rate with strong overall profitability`);
+      }
+      
+      // Volatility Analysis
+      if (stdDev <= 0.02) {
+        reasons.push(`Low volatility strategy with standard deviation of ${stdDev.toFixed(4)} suitable for conservative investors`);
+      } else if (stdDev <= 0.05) {
+        reasons.push(`Moderate volatility with ${stdDev.toFixed(4)} standard deviation balances growth and stability`);
+      }
+      
+      // Strategy-specific insights
+      const strategyInsights = {
+        'vwap': 'Leverages institutional trading volume patterns for optimal entry and exit timing',
+        '3_pos': 'Captures strong momentum through consecutive bullish price action confirmation',
+        'hma_ema': 'Combines RSI momentum signals with moving average trend confirmation',
+        'macd_ema': 'Uses MACD convergence/divergence to identify optimal trend entry points',
+        'adx_dmi': 'Measures trend strength and direction for high-confidence position sizing',
+        'bb_adx': 'Identifies explosive breakout opportunities through volatility and volume analysis',
+        'elder_triple': 'Multi-timeframe approach filters noise for high-probability trade setups',
+        'rsi_bb': 'Detects volatility contractions before significant price expansions',
+        'rsi_macd': 'Dual momentum confirmation reduces false signals and improves accuracy',
+        'triple_ema': 'Triple moving average system smooths price action for clear trend identification'
+      };
+      
+      if (strategyInsights[strategyKey]) {
+        reasons.push(strategyInsights[strategyKey]);
+      }
+      
+      // Ensure we have at least 3 reasons
+      if (reasons.length < 3) {
+        reasons.push('Comprehensive backtesting validates strategy effectiveness across multiple market conditions');
+        reasons.push('Algorithm optimization ensures strategy parameters are fine-tuned for current market dynamics');
+      }
+      
+      // Limit to maximum 5 reasons for better readability
+      return reasons.slice(0, 5);
+    }
+
+    // Function to generate dynamic strategy description
+    function generateStrategyDescription(metrics, strategyKey) {
+      const winRate = parseFloat(metrics.win_rate);
+      const sharpeRatio = parseFloat(metrics.sharpe_ratio);
+      const cagr = parseFloat(metrics.cagr);
+      
+      let description = '';
+      
+      if (sharpeRatio >= 1.5 && winRate >= 60) {
+        description = 'High-performance strategy combining exceptional risk-adjusted returns with consistent profitability. ';
+      } else if (cagr >= 15 && winRate >= 55) {
+        description = 'Growth-oriented strategy delivering strong annual returns with reliable trade execution. ';
+      } else if (sharpeRatio >= 1.0) {
+        description = 'Balanced strategy offering solid risk-adjusted returns with prudent capital management. ';
+      } else {
+        description = 'Systematic trading approach designed for consistent performance across varying market conditions. ';
+      }
+      
+      // Add strategy-specific technical description
+      const technicalDescriptions = {
+        'vwap': description + 'Utilizes Volume Weighted Average Price to align trades with institutional money flow.',
+        '3_pos': description + 'Identifies strong upward momentum through three consecutive positive closing periods.',
+        'hma_ema': description + 'Combines RSI oscillator signals with exponential moving average crossovers for precise timing.',
+        'macd_ema': description + 'Leverages MACD histogram and signal line convergence for trend change identification.',
+        'adx_dmi': description + 'Uses Average Directional Index to measure trend strength and directional movement.',
+        'bb_adx': description + 'Merges Bollinger Band volatility signals with ADX trend strength and volume spike confirmation.',
+        'elder_triple': description + 'Implements Dr. Alexander Elder\'s triple screen methodology across multiple timeframes.',
+        'rsi_bb': description + 'Combines RSI momentum with Bollinger Band squeeze patterns for breakout prediction.',
+        'rsi_macd': description + 'Dual confirmation system using RSI and MACD for enhanced signal reliability.',
+        'triple_ema': description + 'Three-tier exponential moving average system for robust trend following.'
+      };
+      
+      return technicalDescriptions[strategyKey] || description + 'Advanced algorithmic approach optimized for current market conditions.';
+    }
+
+    // DOM elements
+    const equityBtn = document.getElementById('equityBtn');
+    const cryptoBtn = document.getElementById('cryptoBtn');
+    const marketButtons = document.getElementById('marketButtons');
+    const stockSelect = document.getElementById('stock');
+    const form = document.getElementById('recommendForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const placeholder = document.getElementById('placeholder');
+    const errorMessage = document.getElementById('errorMessage');
+    const resultsContent = document.getElementById('resultsContent');
+
+    let currentMarket = "equity";
+    let selectedRegion = "US";
+
+    // Initialize
+    function init() {
+      populateStockOptions(marketStocks[selectedRegion]);
+      setupEventListeners();
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Market type toggle
+      equityBtn.addEventListener('click', () => switchMarketType('equity'));
+      cryptoBtn.addEventListener('click', () => switchMarketType('crypto'));
+
+      // Market region buttons
+      marketButtons.addEventListener('click', (e) => {
+        if (e.target.classList.contains('market-btn')) {
+          selectMarketRegion(e.target);
+        }
+      });
+
+      // Form submission
+      form.addEventListener('submit', handleFormSubmit);
+    }
+
+    // Switch market type
+    function switchMarketType(type) {
+      currentMarket = type;
+      
+      if (type === 'equity') {
+        equityBtn.classList.add('active');
+        cryptoBtn.classList.remove('active');
+        marketButtons.classList.remove('hidden');
+        populateStockOptions(marketStocks[selectedRegion]);
+      } else {
+        cryptoBtn.classList.add('active');
+        equityBtn.classList.remove('active');
+        marketButtons.classList.add('hidden');
+        populateStockOptions(cryptoAssets);
+      }
+    }
+
+    // Select market region
+    function selectMarketRegion(button) {
+      // Remove active class from all buttons
+      marketButtons.querySelectorAll('.market-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+      selectedRegion = button.dataset.market;
+      
+      // Update stock options
+      if (currentMarket === 'equity') {
+        populateStockOptions(marketStocks[selectedRegion]);
+      }
+    }
+
+    // Populate stock options
+    function populateStockOptions(stockList) {
+      stockSelect.innerHTML = '<option value="" disabled selected>Select an asset</option>';
+      stockList.forEach(stock => {
+        const option = document.createElement('option');
+        option.value = stock.symbol;
+        option.textContent = `${stock.name} (${stock.symbol})`;
+        stockSelect.appendChild(option);
+      });
+    }
+
+    // Handle form submission
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      // Show loading state
+      setLoadingState(true);
+      hideResults();
+      
+      try {
+        const formData = new FormData(form);
+        const response = await fetch("/recommend_strategy", {
+          method: "POST",
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          showError(data.error);
+        } else {
+          showResults(data);
+        }
+      } catch (error) {
+        showError("Network error: " + error.message);
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    // Set loading state
+    function setLoadingState(loading) {
+      if (loading) {
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+      } else {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Hide all results
+    function hideResults() {
+      placeholder.style.display = 'none';
+      errorMessage.classList.remove('show');
+      resultsContent.classList.remove('show');
+    }
+
+    // Show error
+    function showError(error) {
+      hideResults();
+      document.getElementById('errorText').textContent = error;
+      errorMessage.classList.add('show');
+    }
+
+    // Show results
+    function showResults(data) {
+      hideResults();
+      
+      // Get strategy name
+      const strategyKey = data.recommended_strategy;
+      const strategyName = strategyNames[strategyKey] || strategyKey.toUpperCase();
+      
+      // Populate strategy name
+      document.getElementById('strategyName').textContent = strategyName;
+      
+      // Populate metrics
+      const metrics = data.metrics;
+      document.getElementById('investedCapital').textContent = `$${parseFloat(metrics.invested_capital).toLocaleString()}`;
+      document.getElementById('portfolioValue').textContent = `$${parseFloat(metrics.portfolio_value).toLocaleString()}`;
+      document.getElementById('sharpeRatio').textContent = parseFloat(metrics.sharpe_ratio).toFixed(2);
+      document.getElementById('sortinoRatio').textContent = parseFloat(metrics.sortino_ratio).toFixed(2);
+      document.getElementById('calmarRatio').textContent = parseFloat(metrics.calmar_ratio).toFixed(2);
+      document.getElementById('cagr').textContent = `${parseFloat(metrics.cagr).toFixed(2)}`;
+      document.getElementById('winRate').textContent = `${parseFloat(metrics.win_rate).toFixed(2)}%`;
+      document.getElementById('maxDrawdown').textContent = `${parseFloat(metrics.max_drawdown).toFixed(2)}`;
+      document.getElementById('meanReturn').textContent = parseFloat(metrics.mean).toFixed(4);
+      document.getElementById('medianReturn').textContent = parseFloat(metrics.median).toFixed(4);
+      document.getElementById('stdDev').textContent = parseFloat(metrics.std).toFixed(4);
+      document.getElementById('lossRate').textContent = `${parseFloat(metrics.loss_rate).toFixed(2)}%`;
+      
+      // Generate dynamic description and reasons
+      const dynamicDescription = generateStrategyDescription(metrics, strategyKey);
+      const dynamicReasons = generateDynamicReasons(metrics, strategyKey);
+      
+      // Populate dynamic content
+      document.getElementById('reasonText').textContent = dynamicDescription;
+      
+      const reasonPoints = document.getElementById('reasonPoints');
+      reasonPoints.innerHTML = '';
+      dynamicReasons.forEach(reason => {
+        const li = document.createElement('li');
+        li.innerHTML = `<i class="fas fa-check-circle"></i>${reason}`;
+        reasonPoints.appendChild(li);
+      });
+      
+      // Show results with animation
+      resultsContent.classList.add('show');
+      
+      // Add fade-in animation to all elements
+      setTimeout(() => {
+        resultsContent.querySelectorAll('.fade-in-up').forEach((el, index) => {
+          setTimeout(() => {
+            el.style.animation = 'fadeInUp 0.6s ease-out forwards';
+          }, index * 200);
+        });
+      }, 100);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', init);
+    
+    const investmentCapitalInput = document.getElementById('invest_cap');
+    const thresholdBalanceInput = document.getElementById('min_trade_bal');
+    const thresholdWarning = document.getElementById('thresholdWarning');
+    const submitButton = document.getElementById('submitBtn');
+
+    function validateThreshold() {
+      const investmentCapital = parseFloat(investmentCapitalInput.value);
+      const thresholdBalance = parseFloat(thresholdBalanceInput.value);
+
+      if (!isNaN(investmentCapital) && !isNaN(thresholdBalance)) {
+        if (thresholdBalance >= investmentCapital) {
+          thresholdWarning.style.display = 'block';
+          submitButton.disabled = true;
+        } else {
+          thresholdWarning.style.display = 'none';
+          submitButton.disabled = false;
+        }
+      } else {
+        thresholdWarning.style.display = 'none';
+        submitButton.disabled = false;
+      }
+    }
+
+    investmentCapitalInput.addEventListener('input', validateThreshold);
+    thresholdBalanceInput.addEventListener('input', validateThreshold);
+
+    console.log('🚀 Strategy Recommendation Page Loaded');
+  </script>
+</body>
+</html>
