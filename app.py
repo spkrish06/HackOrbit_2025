@@ -335,7 +335,7 @@ Based on these metrics:
             )
             return response.choices[0].message.content.strip()
         except RateLimitError:
-            print("⚠️ Rate limit hit. Retrying...")
+            print("Rate limit hit. Retrying...")
             time.sleep(delay)
             delay *= 2
     return "Failed to retrieve response from GPT after multiple attempts."
