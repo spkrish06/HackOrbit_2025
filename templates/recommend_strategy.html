@@ -661,6 +661,7 @@
         <i class="fas fa-arrow-left"></i>
         Back to Dashboard
       </a>
+
     </div>
 
     <!-- Content Container -->
@@ -778,9 +779,24 @@
 
         <!-- Results Content -->
         <div id="resultsContent" class="results-content">
+
           <!-- Strategy Header -->
           <div class="strategy-header fade-in-up">
             <div class="strategy-name" id="strategyName">Loading...</div>
+            <!-- Apply Strategy Form -->
+            <form action="/live_signal" method="POST" class="fade-in-up">
+              <input type="hidden" name="strategy" id="strategyInput">
+              <input type="hidden" name="stock" id="stockInput">
+              <input type="hidden" name="invest_cap" id="investCapInput">
+              <input type="hidden" name="turnover" id="turnoverInput">
+              <input type="hidden" name="min_trade_bal" id="minTradeBalInput">
+              <input type="hidden" name="is_crypto" id="isCryptoInput">
+
+              <button type="submit" class="btn btn-success" id="applyBtn">
+                📡 Apply This Strategy
+              </button>
+            </form>
+
             <div class="strategy-subtitle">Recommended Trading Strategy</div>
           </div>
 
@@ -1368,6 +1384,8 @@
       // Get strategy name
       const strategyKey = data.recommended_strategy;
       const strategyName = strategyNames[strategyKey] || strategyKey.toUpperCase();
+
+
       
       // Populate strategy name
       document.getElementById('strategyName').textContent = strategyName;
@@ -1402,6 +1420,15 @@
         reasonPoints.appendChild(li);
       });
       
+      // Populate hidden form inputs for /live_signal
+      document.getElementById('strategyInput').value = data.recommended_strategy;
+      document.getElementById('stockInput').value = form.stock.value;
+      document.getElementById('investCapInput').value = form.invest_cap.value;
+      document.getElementById('turnoverInput').value = form.turnover.value;
+      document.getElementById('minTradeBalInput').value = form.min_trade_bal.value;
+      document.getElementById('isCryptoInput').value = currentMarket === 'crypto';
+
+
       // Show results with animation
       resultsContent.classList.add('show');
       
