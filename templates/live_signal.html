@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📡 Live Signal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+   /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+      height: 100vh;
+    }
+
+    /* Animated Background */
+    .animated-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Gradient Orbs */
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 200px;
+      height: 200px;
+      background: rgba(59, 130, 246, 0.15);
+      top: 20%;
+      left: 20%;
+    }
+
+    .orb-2 {
+      width: 160px;
+      height: 160px;
+      background: rgba(147, 51, 234, 0.15);
+      top: 60%;
+      right: 20%;
+      animation-delay: 2s;
+    }
+
+    .orb-3 {
+      width: 120px;
+      height: 120px;
+      background: rgba(16, 185, 129, 0.15);
+      top: 40%;
+      left: 70%;
+      animation-delay: 4s;
+    }
+
+    /* Floating Icons */
+    .floating-icons {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .floating-icon {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.1;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .icon-1 { color: #f59e0b; top: 10%; left: 10%; animation-delay: 0s; }
+    .icon-2 { color: #10b981; top: 20%; right: 20%; animation-delay: 2s; }
+    .icon-3 { color: #ef4444; bottom: 30%; left: 15%; animation-delay: 4s; }
+    .icon-4 { color: #3b82f6; top: 60%; right: 10%; animation-delay: 6s; }
+    .icon-5 { color: #eab308; bottom: 20%; right: 30%; animation-delay: 8s; }
+    .icon-6 { color: #8b5cf6; top: 40%; left: 5%; animation-delay: 10s; }
+
+    /* Main Container */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    /* Top Header */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      height: 60px;
+      position: relative;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .brand-section:hover {
+      transform: scale(1.02);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+
+    .brand-logo i {
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: #d1d5db;
+      margin: 0;
+    }
+
+    /* Welcome Message */
+    .welcome-message {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      animation: welcomeSlideIn 0.5s ease-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+    @keyframes welcomeSlideIn {
+      0% { 
+        opacity: 0; 
+        transform: translateX(-50%) translateY(-20px); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateX(-50%) translateY(0); 
+      }
+    }
+
+    /* Market News Popup */
+    .market-news-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 2000;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    .market-news-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .market-news-title {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .market-news-close {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+
+    .market-news-close:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .market-news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+    }
+
+    .market-news-country {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .market-news-country-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .market-news-country-name {
+      color: #60a5fa;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .market-news-item {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border-left: 3px solid;
+      transition: all 0.2s ease;
+    }
+
+    .market-news-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(2px);
+    }
+
+    .market-news-item.positive {
+      border-left-color: #10b981;
+    }
+
+    .market-news-item.negative {
+      border-left-color: #ef4444;
+    }
+
+    .market-news-item.neutral {
+      border-left-color: #f59e0b;
+    }
+
+    .market-news-text {
+      color: #d1d5db;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .market-news-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .market-news-link:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+
+    .market-news-source {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .market-news-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1999;
+      display: none;
+    }
+
+    .market-news-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: #60a5fa;
+    }
+
+    .market-news-error {
+      text-align: center;
+      color: #ef4444;
+      padding: 20px;
+    }
+
+    /* Email Report Section */
+    .email-report-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .email-report-section input[type="email"] {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: white;
+      padding: 4px 8px;
+      width: 200px;
+      font-size: 0.8rem;
+    }
+
+    .email-report-section input[type="email"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    .email-report-section input[type="email"]::placeholder {
+      color: #9ca3af;
+      font-size: 0.8rem;
+    }
+
+    .email-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .email-btn:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .email-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Email Spinner */
+    .email-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 2px solid white;
+      animation: spin 1s linear infinite;
+      margin-right: 6px;
+    }
+
+    /* Email Success/Error Message - TOP RIGHT POSITIONING */
+    .email-notification {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      border: 1px solid;
+      animation: slideInFromRight 0.5s ease-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .email-notification.success {
+      background: rgba(16, 185, 129, 0.9);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: white;
+    }
+
+    .email-notification.error {
+      background: rgba(239, 68, 68, 0.9);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: white;
+    }
+
+    @keyframes slideInFromRight {
+      0% { 
+        opacity: 0; 
+        transform: translateX(100px); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateX(0); 
+      }
+    }
+
+    /* Action Buttons - DROPDOWN MENU */
+    .action-buttons {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .market-news-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .market-news-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .action-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .action-dropdown-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-dropdown-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .action-dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 5px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      min-width: 200px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .action-dropdown-content.show {
+      display: block;
+      animation: fadeInDown 0.3s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      0% { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .action-dropdown-item {
+      display: block;
+      padding: 10px 15px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .action-dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #60a5fa;
+    }
+
+    .action-dropdown-item i {
+      margin-right: 8px;
+      width: 16px;
+    }
+
+    /* Logout Button */
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      gap: 15px;
+      min-height: 0;
+    }
+
+    /* Sidebar - COMPACT DESIGN */
+    .sidebar {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h4 {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0 15px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #d1d5db;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      color: #60a5fa;
+      border-bottom-color: #60a5fa;
+    }
+
+    .tab-btn:hover {
+      color: white;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .tab-pane {
+      display: none;
+      height: 100%;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Form Styling - COMPACT DESIGN */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      color: #e5e7eb;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: white;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.25);
+      color: white;
+      outline: none;
+    }
+
+    .form-control::placeholder {
+      color: #9ca3af;
+    }
+
+    .form-select option {
+      background: #1f2937;
+      color: white;
+    }
+
+    /* Button Styling */
+    .btn-primary-custom {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: white;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary-custom:hover {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary-custom {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: white;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary-custom:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    /* Market Buttons - VERY COMPACT 2 ROWS */
+    .market-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: white;
+      margin: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .market-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .market-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-color: #3b82f6;
+      color: white;
+    }
+
+    /* Toggle Buttons - COMPACT SIZE */
+    .toggle-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-buttons .btn {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Market Navbar - VERY COMPACT 2 ROWS */
+    #marketNavbar {
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+      max-height: 60px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    #marketNavbar.hidden-navbar {
+      max-height: 0;
+      margin-bottom: 0;
+    }
+
+    .market-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 2px;
+    }
+
+    .market-row.top-row {
+      /* First row: US, UK, India - evenly distributed */
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    .market-row.bottom-row {
+      /* Second row: Japan, Germany, China - evenly distributed */
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    /* Description Box - COMPACT */
+    .description-box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 12px;
+      color: #d1d5db;
+      font-size: 0.75rem;
+      display: none;
+      line-height: 1.3;
+    }
+
+    /* Metrics Table */
+    .metrics-container {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .metrics table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+
+    .metrics th,
+    .metrics td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .metrics th {
+      background: rgba(255, 255, 255, 0.1);
+      color: #60a5fa;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .metrics td {
+      color: white;
+      font-weight: 500;
+    }
+
+    /* Plot Container - COMPLETELY SEAMLESS AND BORDERLESS */
+    .plot-container {
+      height: 100%;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* REMOVE CHART TITLE WHEN CHART IS PRESENT */
+    .plot-container h5 {
+      display: none;
+    }
+
+    .plot-content {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      position: relative;
+    }
+
+    /* Enhanced Plotly Styling - COMPLETELY SEAMLESS */
+    .js-plotly-plot {
+      border: none !important;
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+
+    .plotly-graph-div {
+      border: none !important;
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .js-plotly-plot .plotly .modebar {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      top: 10px !important;
+      right: 10px !important;
+    }
+
+    .js-plotly-plot .plotly .modebar-btn {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .js-plotly-plot .plotly .modebar-btn:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+      color: white !important;
+    }
+
+    /* Original Chat Container Styles - KEEPING EXACTLY THE SAME */
+    .chat-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container h3 {
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    #chat-messages {
+      height: 260px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      color: #d1d5db;
+      flex: 1;
+    }
+
+    .chat-message {
+      margin-bottom: 0.75rem;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .user-message {
+      font-weight: 700;
+      color: #60a5fa;
+      text-align: right;
+    }
+
+    .bot-reply {
+      color: #d1d5db;
+      text-align: left;
+    }
+
+    #chat-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: white;
+      padding: 0.75rem 1rem;
+      flex: 1;
+      margin-right: 0.5rem;
+    }
+
+    #chat-input:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+      outline: none;
+    }
+
+    #chat-input::placeholder {
+      color: #9ca3af;
+    }
+
+    #send-btn {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #send-btn:hover {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      transform: translateY(-1px);
+    }
+
+    /* ENHANCED CHAT STYLES - NEW ADDITIONS */
+    
+    /* Feature Pills in Welcome Message */
+    .enhanced-welcome {
+      line-height: 1.6;
+    }
+
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .feature-pill {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Quick Suggestions */
+    .quick-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .suggestion-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      color: #d1d5db;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .suggestion-btn:hover {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* Enhanced Message Types */
+    .response-header {
+      font-weight: 600;
+      color: #60a5fa;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.3);
+    }
+
+    .comparison-response,
+    .explanation-response,
+    .risk-response,
+    .evaluation-response {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    .risk-response {
+      border-left: 3px solid #ef4444;
+    }
+
+    .explanation-response {
+      border-left: 3px solid #8b5cf6;
+    }
+
+    .comparison-response {
+      border-left: 3px solid #10b981;
+    }
+
+    .evaluation-response {
+      border-left: 3px solid #f59e0b;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 2px;
+    }
+
+    .typing-dots .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #3b82f6;
+      animation: typingDot 1.4s infinite;
+    }
+
+    .typing-dots .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingDot {
+      0%, 60%, 100% { opacity: 0.3; }
+      30% { opacity: 1; }
+    }
+
+    /* Strategy Comparison Table */
+    .comparison-table {
+      margin-top: 12px;
+    }
+
+    .table-header {
+      font-weight: 600;
+      color: #60a5fa;
+      margin-bottom: 8px;
+    }
+
+    .strategy-comparison-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+
+    .strategy-comparison-table th,
+    .strategy-comparison-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .strategy-comparison-table th {
+      background: rgba(255, 255, 255, 0.1);
+      color: #60a5fa;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .strategy-comparison-table td {
+      color: #d1d5db;
+    }
+
+    .strategy-name {
+      font-weight: 600;
+      color: white;
+    }
+
+    .metric-value {
+      font-family: "Courier New", monospace;
+      font-weight: 500;
+    }
+
+    .recommendation {
+      font-weight: 600;
+      text-align: center;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    .rec-buy {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .rec-sell {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .rec-hold {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    /* Performance Evaluation Table */
+    .performance-evaluation {
+      margin-top: 12px;
+    }
+
+    .evaluation-header {
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .evaluation-metrics-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+
+    .evaluation-metrics-table th,
+    .evaluation-metrics-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .evaluation-metrics-table th {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f59e0b;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .evaluation-metrics-table td {
+      color: #d1d5db;
+    }
+
+    /* Overall Assessment */
+    .overall-assessment {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .assessment-header {
+      font-weight: 600;
+      color: #60a5fa;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .assessment-score {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .score-excellent { color: #10b981; }
+    .score-good { color: #f59e0b; }
+    .score-average { color: #f59e0b; }
+    .score-poor { color: #ef4444; }
+
+    /* Recommendations */
+    .recommendations {
+      margin-top: 12px;
+    }
+
+    .rec-header {
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: 8px;
+    }
+
+    .rec-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .rec-list li {
+      padding: 4px 0;
+      color: #d1d5db;
+      display: flex;
+      align-items: center;
+    }
+
+    .rec-list li i {
+      color: #10b981;
+    }
+
+    /* Alert Styling */
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      color: #fca5a5;
+      padding: 8px;
+      font-size: 0.75rem;
+      margin-bottom: 12px;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 30px;
+      height: 30px;
+      margin: 20px auto;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 3px solid #3b82f6;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Page Loading Overlay */
+    .page-loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .page-loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid #3b82f6;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .page-loading-text {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Placeholder */
+    .placeholder-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .placeholder-content i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-10px) rotate(120deg); }
+      66% { transform: translateY(5px) rotate(240deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(1.05); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .sidebar {
+        width: 280px;
+      }
+      
+      .email-report-section input[type="email"] {
+        width: 150px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: 200px;
+      }
+      
+      .top-header {
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+      }
+      
+      .email-report-section {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .email-report-section input[type="email"] {
+        width: 100%;
+      }
+
+      .feature-pills {
+        flex-direction: column;
+      }
+
+      .quick-suggestions {
+        flex-direction: column;
+      }
+
+      .suggestion-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .strategy-comparison-table {
+        font-size: 0.7rem;
+      }
+
+      .market-row {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .signal-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .signal-display {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .signal-display.loading {
+      color: #9ca3af;
+    }
+    
+    .signal-display.buy {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .signal-display.sell {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    
+    .signal-value {
+      font-size: 4rem;
+      font-weight: 700;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .signal-value.buy {
+      color: #10b981;
+    }
+    
+    .signal-value.sell {
+      color: #ef4444;
+    }
+    
+    .signal-price {
+      font-size: 1.5rem;
+      color: #d1d5db;
+      margin-bottom: 10px;
+    }
+    
+    .signal-time {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    
+    .signal-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid #3b82f6;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    
+    .signal-info {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    
+    .signal-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .signal-info-row:last-child {
+      border-bottom: none;
+    }
+    
+    .signal-info-label {
+      color: #9ca3af;
+      font-weight: 600;
+    }
+    
+    .signal-info-value {
+      color: white;
+      font-weight: 500;
+    }
+    
+    .signal-strategy {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .refresh-notice {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="animated-background">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="floating-icons">
+      <div class="floating-icon icon-1"><i class="fas fa-chart-line"></i></div>
+      <div class="floating-icon icon-2"><i class="fas fa-dollar-sign"></i></div>
+      <div class="floating-icon icon-3"><i class="fas fa-percentage"></i></div>
+      <div class="floating-icon icon-4"><i class="fas fa-coins"></i></div>
+      <div class="floating-icon icon-5"><i class="fas fa-exchange-alt"></i></div>
+      <div class="floating-icon icon-6"><i class="fas fa-chart-pie"></i></div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Top Header -->
+    <div class="top-header">
+      <div class="brand-section" onclick="window.location.href='/'">
+        <div class="brand-logo">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">Live Signal</h1>
+          <p class="brand-subtitle">Real-time trading alerts</p>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <a href="/" class="logout-btn">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+          <button class="tab-btn active">Signal</button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <div class="tab-pane active">
+            <div class="signal-container">
+              <!-- Signal Display -->
+              <div class="signal-display loading" id="signalDisplay">
+                <div class="signal-spinner" id="signalSpinner"></div>
+                <div id="signalText">Analyzing market data...</div>
+              </div>
+              
+              <!-- Signal Info -->
+              <div class="signal-info">
+                <div class="signal-info-row">
+                  <span class="signal-info-label">Stock</span>
+                  <span class="signal-info-value" id="stockValue">{{ stock }}</span>
+                </div>
+                <div class="signal-info-row">
+                  <span class="signal-info-label">Strategy</span>
+                  <span class="signal-info-value">
+                    <span class="signal-strategy" id="strategyValue">{{ strategy }}</span>
+                  </span>
+                </div>
+                <div class="signal-info-row">
+                  <span class="signal-info-label">Signal Strength</span>
+                  <span class="signal-info-value" id="strengthValue">-</span>
+                </div>
+                <div class="signal-info-row">
+                  <span class="signal-info-label">Last Updated</span>
+                  <span class="signal-info-value" id="timeValue">-</span>
+                </div>
+              </div>
+              
+              <div class="refresh-notice">
+                Auto-refreshes every 60 seconds
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function fetchLiveSignal() {
+      try {
+        const response = await fetch("/get_live_signal", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            stock: "{{ stock }}",
+            strategy: "{{ strategy }}"
+          })
+        });
+
+        const data = await response.json();
+        const display = document.getElementById('signalDisplay');
+        const text = document.getElementById('signalText');
+        const spinner = document.getElementById('signalSpinner');
+        const timeValue = document.getElementById('timeValue');
+        const strengthValue = document.getElementById('strengthValue');
+
+        if (!data.signal) {
+          display.className = "signal-display";
+          spinner.style.display = "none";
+          text.innerHTML = "No signal data available";
+          timeValue.textContent = "-";
+          strengthValue.textContent = "-";
+          return;
+        }
+
+
+        display.className = `signal-display ${data.signal.toLowerCase()}`;
+        spinner.style.display = "none";
+        
+        const signalIcon = data.signal === "BUY" ? 
+          '<i class="fas fa-arrow-up"></i>' : 
+          '<i class="fas fa-arrow-down"></i>';
+        
+        text.innerHTML = `
+          <div class="signal-value ${data.signal.toLowerCase()}">
+            ${signalIcon} ${data.signal}
+          </div>
+          <div class="signal-price">$${data.price}</div>
+          <div class="signal-time">Signal generated at ${data.time}</div>
+        `;
+        
+        timeValue.textContent = data.time;
+        strengthValue.textContent = data.strength || "Medium"; 
+        
+      } catch (error) {
+        console.error("Error fetching signal:", error);
+        document.getElementById('signalDisplay').className = "signal-display";
+        document.getElementById('signalSpinner').style.display = "none";
+        document.getElementById('signalText').innerHTML = "Error loading signal data";
+      }
+    }
+
+
+    fetchLiveSignal();
+    
+   
+    setInterval(fetchLiveSignal, 60000);
+  </script>
+</body>
+</html>
